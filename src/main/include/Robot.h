@@ -12,6 +12,9 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <Robot.h>
+#include <Euler.h>
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
