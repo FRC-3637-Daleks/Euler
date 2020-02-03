@@ -1,11 +1,4 @@
 #include <Euler.h>
-#include <rev/CANSparkMax.h>
-#include <frc/Joystick.h>
-#include <frc/SpeedControllerGroup.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/drive/MecanumDrive.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <DalekDrive.h>
 
 using namespace frc;
 using namespace rev;
@@ -16,9 +9,25 @@ DalekDrive::DalekDrive(int leftFront, int leftRear,
          int rightFront, int rightRear, DalekDrive::driveType t)
 {
 	m_leftMotor[FRONT]   = new CANSparkMax(leftFront, CANSparkMax::MotorType::kBrushless);
+	if (m_leftMotor[FRONT] == NULL) {
+		printf("Failed to initialize LF motor\n");
+		return;
+	}
 	m_rightMotor[FRONT]  = new CANSparkMax(rightFront, CANSparkMax::MotorType::kBrushless);
+	if (m_rightMotor[FRONT] == NULL) {
+		printf("Failed to initialize RF motor\n");
+		return;
+	}
 	m_leftMotor[REAR]    = new CANSparkMax(leftRear, CANSparkMax::MotorType::kBrushless);
+	if (m_leftMotor[REAR] == NULL) {
+		printf("Failed to initialize LR motor\n");
+		return;
+	}
 	m_rightMotor[REAR]   = new CANSparkMax(rightRear, CANSparkMax::MotorType::kBrushless);
+	if (m_rightMotor[REAR] == NULL) {
+		printf("Failed to initialize RR motor\n");
+		return;
+	}
 	m_left               = new SpeedControllerGroup(*m_leftMotor[FRONT], *m_leftMotor[REAR]);
     m_right              = new SpeedControllerGroup(*m_rightMotor[FRONT], *m_rightMotor[REAR]);
 	m_type               = t;

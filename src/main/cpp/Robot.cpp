@@ -5,13 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Robot.h"
+#include <Euler.h>
 
-#include <iostream>
+using namespace frc;
 
-#include <frc/smartdashboard/SmartDashboard.h>
-
-void Robot::RobotInit() {
+void Robot::RobotInit() 
+{
+  m_drive      = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
+  m_leftStick  = new frc::Joystick(0);
+  m_rightStick = new frc::Joystick(1);
+  
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -25,7 +28,10 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic()
+{
+
+}
 
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -38,7 +44,8 @@ void Robot::RobotPeriodic() {}
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-void Robot::AutonomousInit() {
+void Robot::AutonomousInit()
+{
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
@@ -51,19 +58,31 @@ void Robot::AutonomousInit() {
   }
 }
 
-void Robot::AutonomousPeriodic() {
+void Robot::AutonomousPeriodic() 
+{
   if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
   }
+  m_drive->TankDrive(0.0, 0.0, false);
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit()
+{
 
-void Robot::TeleopPeriodic() {}
+}
 
-void Robot::TestPeriodic() {}
+void Robot::TeleopPeriodic()
+{
+    if (m_drive)
+        m_drive->TankDrive(m_leftStick, m_rightStick, false);
+}
+
+void Robot::TestPeriodic()
+{
+
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }

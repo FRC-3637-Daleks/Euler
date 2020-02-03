@@ -4,7 +4,12 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#include <rev/CANSparkMax.h>
+#include <frc/Joystick.h>
+#include <frc/SpeedControllerGroup.h>
+#include <frc/drive/DifferentialDrive.h>
+#include <frc/drive/MecanumDrive.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 /*
  * Utility class for handling Robot drive 
  */
