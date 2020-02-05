@@ -7,6 +7,14 @@
 
 #include <Euler.h>
 
+#include <iostream>
+
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardLayout.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
+#include <networktables/NetworkTableEntry.h>
+#include <networktables/NetworkTableInstance.h>
+
 using namespace frc;
 
 void Robot::RobotInit() 
@@ -75,6 +83,16 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+    int xOffset; 
+    xOffset = frc::SmartDashboard::GetNumber("X Offset", -1);
+
+    int distance;
+    distance = frc::SmartDashboard::GetNumber("Distance", -1);
+
+    double ratio = pow(2, 0.03 * xOffset / distance);
+
+    frc::SmartDashboard::PutNumber("Ratio", ratio);
+
     if (m_drive)
         m_drive->TankDrive(m_leftStick, m_rightStick, false);
 }
