@@ -115,8 +115,7 @@ DalekDrive::TankDrive(Joystick& leftStick, Joystick& rightStick, bool squaredInp
 	if(m_type == DalekDrive::driveType::kDifferential)
 		m_diffdrive->TankDrive(leftStick.GetY(), rightStick.GetY(), squaredInputs);	
 	else {
-		double l, r;
-		l = leftStick.GetY(); r = rightStick.GetY();
+		double l = leftStick.GetY(), r = rightStick.GetY();
 		if(squaredInputs) {
 			l = squareInput(l);
 			r = squareInput(r);
@@ -132,9 +131,7 @@ DalekDrive::TankDrive(double leftValue, double rightValue, bool squaredInputs)
 	if(m_type == DalekDrive::driveType::kDifferential)
 		m_diffdrive->TankDrive(leftValue, rightValue, squaredInputs);
 	else {
-		double l, r;
-
-		l = leftValue; r = rightValue;
+		double l = leftValue, r = rightValue;
 		if(squaredInputs) {
 			l = squareInput(l);
 			r = squareInput(r);
@@ -147,22 +144,25 @@ DalekDrive::TankDrive(double leftValue, double rightValue, bool squaredInputs)
 void
 DalekDrive::ArcadeDrive(Joystick* stick, bool squaredInputs)
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
+	if(m_type == DalekDrive::driveType::kDifferential) {
 		m_diffdrive->ArcadeDrive(stick->GetX(), stick->GetY(), squaredInputs);
+	}
 }
 
 void
 DalekDrive::ArcadeDrive(Joystick& stick, bool squaredInputs)
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
+	if(m_type == DalekDrive::driveType::kDifferential) {
 		m_diffdrive->ArcadeDrive(stick.GetX(), stick.GetY(), squaredInputs);
+	}
 }
 
 void
 DalekDrive::ArcadeDrive(double moveValue, double rotateValue, bool squaredInputs)
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
+	if(m_type == DalekDrive::driveType::kDifferential) {
 		m_diffdrive->ArcadeDrive(moveValue, rotateValue, squaredInputs);
+	}
 }
 
 void
@@ -200,31 +200,15 @@ void
 DalekDrive::Cartesian(Joystick* stick,	double gyroAngle)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		double x, y, z;
-		double twistAdjustment = 5;
-		x = stick->GetX(); x = squareInput(DeadZone(x, .1));
-		y = stick->GetY(); y = squareInput(DeadZone(y, .1));
-		twistAdjustment = -2 * abs(y) + 4; // This equation should speed up turning speed as y speeds up
-		z = stick->GetTwist(); z = squareInput(squareInput(DeadZone(z, .1))) / twistAdjustment;
-		if(stick->GetTrigger()) {
-			x *= .3;
-			y *= .3;
-			z *= .3;
-		}
-		m_mecanum->DriveCartesian(-x, y, -z, gyroAngle);
+		m_mecanum->DriveCartesian(-stick->GetX(), stick->GetY(), -stick->GetZ(), gyroAngle);
 	}
 }
 
 void 
 DalekDrive::Cartesian(Joystick& stick, double gyroAngle)
 {
-	// for now I'm leaving this the way that was done.  If you want to continue
-	// to have the Cartesian have so much dead space and non linearity, change the
-	// above function to use the same calculations.  Note: This method isn't 
-	// currently used
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DriveCartesian(DeadZone(stick.GetX(), .3) * .5, DeadZone(stick.GetY(), .3) * -.5, DeadZone(stick.GetTwist(), .3) * .2,
-			gyroAngle);
+		m_mecanum->DriveCartesian(-stick.GetX(), stick.GetY(), -stick.GetTwist(), gyroAngle);
 	}
 }
 
@@ -313,15 +297,13 @@ DalekDrive::printFaults(int p, int faults)
 	case LEFT: 
 		SmartDashboard::PutNumber("Left Drive Motor reported faults", faults);
 		if(m_leftMotor[REAR]) {
-			SmartDashboard::PutNumber("Left slave status",
-					m_leftMotor[REAR]->GetFaults());
+			SmartDashboard::PutNumber("Left slave status", m_leftMotor[REAR]->GetFaults());
 		}
         break; 
     case RIGHT:
 		SmartDashboard::PutNumber("Right Drive Motor reported faults", faults);
 		if(m_rightMotor[REAR]) {
-			SmartDashboard::PutNumber("Right slave status",
-					m_rightMotor[REAR]->GetFaults());
+			SmartDashboard::PutNumber("Right slave status", m_rightMotor[REAR]->GetFaults());
 		}
         break;
     default:
@@ -335,7 +317,7 @@ DalekDrive::DriveOk()
 {
 	int mstat;
 #ifdef MOTOR_PRINT
-	// update dashboard of current draw for motors
+	// Update dashboard of current draw for motors
 	frc::SmartDashboard::PutNumber("Left Front current", 
 		m_leftMotor[FRONT]->GetOutputCurrent());
 	frc::SmartDashboard::PutNumber("Left Front Encoder position",
@@ -355,7 +337,7 @@ DalekDrive::DriveOk()
 		m_rightEncoder[REAR]->GetPosition());
 	#endif
 
-	// check for motor faults
+	// Check for motor faults
 	mstat = m_leftMotor[FRONT]->GetFaults();
 	if(mstat != 0) {
 		printFaults(LEFT, mstat);
@@ -380,21 +362,21 @@ DalekDrive::DriveOk()
 	return true;
 }
 
-//Use SetLeftRightMotorOutputs(double leftOutput, double rightOutput) instead of using these single ones
+// Use SetLeftRightMotorOutputs(double leftOutput, double rightOutput) instead of using these single ones
 void
 DalekDrive::DriveBaseSquare(int leftSensor, int rightSensor) {
 	#ifdef USE_LIDAR
 		if (LidarInRange (leftSensor, rightSensor)) {
 			if (rightSensor + LidarError > leftSensor || rightSensor - LidarError > leftSensor) {
-				//Turn left
+				// Turn left
 				SetLeftRightMotorOutputs(PositiveMotorSpeed, NegativeMotorSpeed);
 			}
 			else if (leftSensor + LidarError > rightSensor || leftSensor - LidarError > rightSensor) {
-				//Turn Right
+				// Turn Right
 				SetLeftRightMotorOutputs(NegativeMotorSpeed, PositiveMotorSpeed);
 			}
 			else {
-				//STOP!
+				// STOP
 				SetLeftRightMotorOutputs(NullMotorSpeed, NullMotorSpeed);
 			}
 			SmartDashboard::PutNumber("Left Motor Master", m_leftMotor[FRONT]->Get());
@@ -412,7 +394,7 @@ DalekDrive::LidarInRange (int sensorOne, int sensorTwo) {
 			SmartDashboard::PutBoolean("Lidar Status", 0);
 			return false;
 		}
-		//If less than 1000
+		// If less than 1000
 		SmartDashboard::PutBoolean("Lidar Status", 1);
 		return true;
 	#endif
