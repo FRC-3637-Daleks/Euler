@@ -1,53 +1,34 @@
 #include <Euler.h>
+#include <frc/Joystick.h>
 
 using namespace frc;
+using namespace frc2;
 using namespace rev;
 
-//TBD need to add back CTRE motor support
-
-DalekDrive::DalekDrive(int leftFront, int leftRear,
-         int rightFront, int rightRear, DalekDrive::driveType t)
+DalekDrive::DalekDrive(int leftFront, int leftRear, int rightFront, int rightRear, DalekDrive::driveType t)
 {
-	m_leftMotor[FRONT]   = new CANSparkMax(leftFront, CANSparkMax::MotorType::kBrushless);
-	if (m_leftMotor[FRONT] == NULL) {
-		printf("Failed to initialize LF motor\n");
-		return;
-	}
-	m_rightMotor[FRONT]  = new CANSparkMax(rightFront, CANSparkMax::MotorType::kBrushless);
-	if (m_rightMotor[FRONT] == NULL) {
-		printf("Failed to initialize RF motor\n");
-		return;
-	}
-	m_leftMotor[REAR]    = new CANSparkMax(leftRear, CANSparkMax::MotorType::kBrushless);
-	if (m_leftMotor[REAR] == NULL) {
-		printf("Failed to initialize LR motor\n");
-		return;
-	}
-	m_rightMotor[REAR]   = new CANSparkMax(rightRear, CANSparkMax::MotorType::kBrushless);
-	if (m_rightMotor[REAR] == NULL) {
-		printf("Failed to initialize RR motor\n");
-		return;
-	}
-	m_left               = new SpeedControllerGroup(*m_leftMotor[FRONT], *m_leftMotor[REAR]);
-    m_right              = new SpeedControllerGroup(*m_rightMotor[FRONT], *m_rightMotor[REAR]);
-	m_type               = t;
+	m_leftMotor[FRONT]   	= new CANSparkMax(leftFront, CANSparkMax::MotorType::kBrushless);
+	m_rightMotor[FRONT]  	= new CANSparkMax(rightFront, CANSparkMax::MotorType::kBrushless);
+	m_leftMotor[REAR]    	= new CANSparkMax(leftRear, CANSparkMax::MotorType::kBrushless);
+	m_rightMotor[REAR]   	= new CANSparkMax(rightRear, CANSparkMax::MotorType::kBrushless);
+	m_left               	= new SpeedControllerGroup(*m_leftMotor[FRONT], *m_leftMotor[REAR]);
+    m_right              	= new SpeedControllerGroup(*m_rightMotor[FRONT], *m_rightMotor[REAR]);
+	m_type               	= t;
 	if(t == DalekDrive::driveType::kDifferential) {
-		m_diffdrive      = new DifferentialDrive(*m_left, *m_right);
+		m_diffdrive      	= new DifferentialDrive(*m_left, *m_right);
 	}
 	else {
-	    m_mecanum        = new MecanumDrive(*m_leftMotor[FRONT], *m_leftMotor[REAR],
-	 							*m_rightMotor[FRONT], *m_rightMotor[REAR]);
+	    m_mecanum        	= new MecanumDrive(*m_leftMotor[FRONT], *m_leftMotor[REAR], *m_rightMotor[FRONT], *m_rightMotor[REAR]);
 	}
-	m_leftEncoder[FRONT] = new CANEncoder(*m_leftMotor[FRONT]);
-	m_leftEncoder[REAR]  = new CANEncoder(*m_leftMotor[REAR]);
-	m_rightEncoder[FRONT]= new CANEncoder(*m_rightMotor[FRONT]);
-	m_rightEncoder[REAR] = new CANEncoder(*m_rightMotor[REAR]);
-	m_needFree           = true;
+	m_leftEncoder[FRONT]	= new CANEncoder(*m_leftMotor[FRONT]);
+	m_leftEncoder[REAR]  	= new CANEncoder(*m_leftMotor[REAR]);
+	m_rightEncoder[FRONT]	= new CANEncoder(*m_rightMotor[FRONT]);
+	m_rightEncoder[REAR] 	= new CANEncoder(*m_rightMotor[REAR]);
+	m_needFree          	= true;
 	InitDalekDrive();
 }
 
-DalekDrive::DalekDrive(CANSparkMax* leftFront, CANSparkMax* leftRear,
-         CANSparkMax* rightFront, CANSparkMax* rightRear, DalekDrive::driveType t)
+DalekDrive::DalekDrive(CANSparkMax* leftFront, CANSparkMax* leftRear, CANSparkMax* rightFront, CANSparkMax* rightRear, DalekDrive::driveType t)
 {
 	m_leftMotor[FRONT]   = leftFront;
 	m_rightMotor[FRONT]  = rightFront;
@@ -60,15 +41,13 @@ DalekDrive::DalekDrive(CANSparkMax* leftFront, CANSparkMax* leftRear,
 		m_diffdrive      = new DifferentialDrive(*m_left, *m_right);
 	}
 	else {   
-		m_mecanum        = new MecanumDrive(*m_leftMotor[FRONT], *m_leftMotor[REAR],
-	 							*m_rightMotor[FRONT], *m_rightMotor[REAR]);
+		m_mecanum        = new MecanumDrive(*m_leftMotor[FRONT], *m_leftMotor[REAR], *m_rightMotor[FRONT], *m_rightMotor[REAR]);
 	}
 	m_needFree           = false;
 	InitDalekDrive();
 }
 
-DalekDrive::DalekDrive(CANSparkMax& leftFront, CANSparkMax& leftRear,
-         CANSparkMax& rightFront, CANSparkMax& rightRear, DalekDrive::driveType t)
+DalekDrive::DalekDrive(CANSparkMax& leftFront, CANSparkMax& leftRear, CANSparkMax& rightFront, CANSparkMax& rightRear, DalekDrive::driveType t)
 {
 	m_leftMotor[FRONT]   = &leftFront;
 	m_rightMotor[FRONT]  = &rightFront;
@@ -81,8 +60,7 @@ DalekDrive::DalekDrive(CANSparkMax& leftFront, CANSparkMax& leftRear,
 		m_diffdrive      = new DifferentialDrive(*m_left, *m_right);
 	}
 	else {
-		m_mecanum        = new MecanumDrive(*m_leftMotor[FRONT], *m_leftMotor[REAR],
-	 							*m_rightMotor[FRONT], *m_rightMotor[REAR]);
+		m_mecanum        = new MecanumDrive(*m_leftMotor[FRONT], *m_leftMotor[REAR], *m_rightMotor[FRONT], *m_rightMotor[REAR]);
 	}
 	m_needFree           = false;
 	InitDalekDrive();
@@ -109,24 +87,19 @@ DalekDrive::~DalekDrive()
 double
 DalekDrive::squareInput(double v)
 {
-	// sign preserving square function
-	if (v < 0.0)
+	if (v < 0.0) {
 		return -(v * v);
+	}
 	return (v * v);
 }
 
 void
-DalekDrive::TankDrive(frc::Joystick* leftStick, frc::Joystick* rightStick,
-             bool squaredInputs)
+DalekDrive::TankDrive(Joystick* leftStick, Joystick* rightStick, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential)
 		m_diffdrive->TankDrive(leftStick->GetY(), rightStick->GetY(), squaredInputs);
 	else {
-		// note mecanum wheels aren't really meant to run this way but can.  As such
-		// it's not supported by the MecanumDrive class, so hacked up tank drive
-		double l, r;
-
-		l = leftStick->GetY(); r = rightStick->GetY();
+		double l = leftStick->GetY(), r = rightStick->GetY();
 		if(squaredInputs) {
 			l = squareInput(l);
 			r = squareInput(r);
@@ -137,14 +110,12 @@ DalekDrive::TankDrive(frc::Joystick* leftStick, frc::Joystick* rightStick,
 }
 
 void
-DalekDrive::TankDrive(frc::Joystick& leftStick, frc::Joystick& rightStick,
-             bool squaredInputs)
+DalekDrive::TankDrive(Joystick& leftStick, Joystick& rightStick, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential)
 		m_diffdrive->TankDrive(leftStick.GetY(), rightStick.GetY(), squaredInputs);	
 	else {
 		double l, r;
-
 		l = leftStick.GetY(); r = rightStick.GetY();
 		if(squaredInputs) {
 			l = squareInput(l);
@@ -174,14 +145,14 @@ DalekDrive::TankDrive(double leftValue, double rightValue, bool squaredInputs)
 }
 
 void
-DalekDrive::ArcadeDrive(frc::Joystick* stick, bool squaredInputs)
+DalekDrive::ArcadeDrive(Joystick* stick, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential)
 		m_diffdrive->ArcadeDrive(stick->GetX(), stick->GetY(), squaredInputs);
 }
 
 void
-DalekDrive::ArcadeDrive(frc::Joystick& stick, bool squaredInputs)
+DalekDrive::ArcadeDrive(Joystick& stick, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential)
 		m_diffdrive->ArcadeDrive(stick.GetX(), stick.GetY(), squaredInputs);
@@ -202,7 +173,7 @@ DalekDrive::SetLeftRightMotorOutputs(double leftOutput, double rightOutput)
 }
 
 void 
-DalekDrive::Polar(frc::Joystick* stick)
+DalekDrive::Polar(Joystick* stick)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
 		m_mecanum->DrivePolar(stick->GetY(), stick->GetX(), stick->GetTwist());
@@ -210,7 +181,7 @@ DalekDrive::Polar(frc::Joystick* stick)
 }
 
 void
-DalekDrive::Polar(frc::Joystick& stick)
+DalekDrive::Polar(Joystick& stick)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
 		m_mecanum->DrivePolar(stick.GetY(), stick.GetX(), stick.GetTwist());
@@ -226,7 +197,7 @@ DalekDrive::Polar(double magnitude, double angle, double zRotation)
 }
 
 void
-DalekDrive::Cartesian(frc::Joystick* stick,	double gyroAngle)
+DalekDrive::Cartesian(Joystick* stick,	double gyroAngle)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
 		double x, y, z;
@@ -245,7 +216,7 @@ DalekDrive::Cartesian(frc::Joystick* stick,	double gyroAngle)
 }
 
 void 
-DalekDrive::Cartesian(frc::Joystick& stick, double gyroAngle)
+DalekDrive::Cartesian(Joystick& stick, double gyroAngle)
 {
 	// for now I'm leaving this the way that was done.  If you want to continue
 	// to have the Cartesian have so much dead space and non linearity, change the
@@ -323,8 +294,7 @@ DalekDrive::InitDalekDrive(void)
 }
 
 float
-DalekDrive::DeadZone(float input, float range) 
-{
+DalekDrive::DeadZone(float input, float range) {
     if (abs(input) < range) {
         return 0;
     } else {
@@ -341,16 +311,16 @@ DalekDrive::printFaults(int p, int faults)
 {
     switch(p) {
 	case LEFT: 
-		frc::SmartDashboard::PutNumber("Left Drive Motor reported faults", faults);
+		SmartDashboard::PutNumber("Left Drive Motor reported faults", faults);
 		if(m_leftMotor[REAR]) {
-			frc::SmartDashboard::PutNumber("Left slave status",
+			SmartDashboard::PutNumber("Left slave status",
 					m_leftMotor[REAR]->GetFaults());
 		}
         break; 
     case RIGHT:
-		frc::SmartDashboard::PutNumber("Right Drive Motor reported faults", faults);
+		SmartDashboard::PutNumber("Right Drive Motor reported faults", faults);
 		if(m_rightMotor[REAR]) {
-			frc::SmartDashboard::PutNumber("Right slave status",
+			SmartDashboard::PutNumber("Right slave status",
 					m_rightMotor[REAR]->GetFaults());
 		}
         break;
@@ -383,7 +353,7 @@ DalekDrive::DriveOk()
 		m_rightMotor[REAR]->GetOutputCurrent());
 	frc::SmartDashboard::PutNumber("Right Rear Encoder position",
 		m_rightEncoder[REAR]->GetPosition());
-#endif
+	#endif
 
 	// check for motor faults
 	mstat = m_leftMotor[FRONT]->GetFaults();
@@ -410,8 +380,40 @@ DalekDrive::DriveOk()
 	return true;
 }
 
+//Use SetLeftRightMotorOutputs(double leftOutput, double rightOutput) instead of using these single ones
 void
-DalekDrive::DriveBaseSquare(int leftSensor, int rightSensor) 
-{
-	// use a sensor to attempt to make drivebase perpendicular to the wall
+DalekDrive::DriveBaseSquare(int leftSensor, int rightSensor) {
+	#ifdef USE_LIDAR
+		if (LidarInRange (leftSensor, rightSensor)) {
+			if (rightSensor + LidarError > leftSensor || rightSensor - LidarError > leftSensor) {
+				//Turn left
+				SetLeftRightMotorOutputs(PositiveMotorSpeed, NegativeMotorSpeed);
+			}
+			else if (leftSensor + LidarError > rightSensor || leftSensor - LidarError > rightSensor) {
+				//Turn Right
+				SetLeftRightMotorOutputs(NegativeMotorSpeed, PositiveMotorSpeed);
+			}
+			else {
+				//STOP!
+				SetLeftRightMotorOutputs(NullMotorSpeed, NullMotorSpeed);
+			}
+			SmartDashboard::PutNumber("Left Motor Master", m_leftMotor[FRONT]->Get());
+			SmartDashboard::PutNumber("Left Motor Slave", m_leftMotor[REAR]->Get());
+			SmartDashboard::PutNumber("Left Motor Master", m_leftMotor[FRONT]->Get());
+			SmartDashboard::PutNumber("Left Motor Slave", m_leftMotor[REAR]->Get());
+		}
+	#endif
+}
+
+bool
+DalekDrive::LidarInRange (int sensorOne, int sensorTwo) {
+	#ifdef USE_LIDAR
+		if (sensorOne >= 1000 || sensorTwo >= 1000) {
+			SmartDashboard::PutBoolean("Lidar Status", 0);
+			return false;
+		}
+		//If less than 1000
+		SmartDashboard::PutBoolean("Lidar Status", 1);
+		return true;
+	#endif
 }

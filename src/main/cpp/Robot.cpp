@@ -94,7 +94,7 @@ void Robot::TeleopPeriodic()
     frc::SmartDashboard::PutNumber("Ratio", ratio);
 
     if (m_drive)
-        m_drive->TankDrive(m_leftStick, m_rightStick, false);
+        m_drive->TankDrive(m_leftStick, m_rightStick, true);
 }
 
 void Robot::TestPeriodic()

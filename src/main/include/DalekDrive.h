@@ -4,32 +4,27 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-#include <rev/CANSparkMax.h>
-#include <frc/Joystick.h>
-#include <frc/SpeedControllerGroup.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/drive/MecanumDrive.h>
-#include <frc/smartdashboard/SmartDashboard.h>
+
 /*
  * Utility class for handling Robot drive 
  */
 #pragma once
 // #define MOTOR_PRINT
 
-#define CAN_TIMEOUT             100
-#define STALL_LIMIT             60
-#define FREE_LIMIT              2
-#define RAMP_RATE               0.5
-#define LEFT                    0
-#define RIGHT                   1
-#define FRONT                   0
-#define REAR                    1
-#define NUM_MOTORS_PER_SIDE     2
-#define SensorFrontToBack       406.4
-#define PositiveMotorSpeed      0.2
-#define NegativeMotorSpeed      -0.2
-#define NullMotorSpeed          0
-#define LidarError              30
+#define CAN_TIMEOUT 				100
+#define STALL_LIMIT 				60
+#define FREE_LIMIT  				2
+#define RAMP_RATE   				0.5
+#define LEFT        				0
+#define RIGHT       				1
+#define FRONT       				0
+#define REAR        				1
+#define NUM_MOTORS_PER_SIDE 		2
+#define sensorFrontToBack         	406.4
+#define PositiveMotorSpeed 		  	.2
+#define NegativeMotorSpeed		  	-.2
+#define NullMotorSpeed			  	0
+#define LidarError				  	30
 
 class DalekDrive {
   public:
@@ -74,6 +69,7 @@ class DalekDrive {
 	double squareInput(double v);
 	void printFaults(int side, int faults);
 	float DeadZone(float input, float range);
+	bool LidarInRange (int sensorOne, int sensorTwo);
 	rev::CANSparkMax *m_leftMotor[NUM_MOTORS_PER_SIDE];
 	rev::CANSparkMax *m_rightMotor[NUM_MOTORS_PER_SIDE];
     frc::SpeedControllerGroup *m_left;
