@@ -1,15 +1,4 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008-2017. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-/*
- * Utility class for handling Robot drive 
- */
 #pragma once
-// #define MOTOR_PRINT
 
 #define CAN_TIMEOUT 				100
 #define STALL_LIMIT 				60
@@ -27,28 +16,21 @@
 #define LidarError				  	30
 
 class DalekDrive {
-  public:
+	public:
 	enum class driveType { kMecanum, kDifferential };
-	DalekDrive(int leftMotorChannel, int leftSlaveMotorChannel,
-            int rightMotorChannel, int rightSlaveMotorChannel, driveType t);
-	DalekDrive(rev::CANSparkMax* leftMotor, rev::CANSparkMax* leftSlaveMotor,
-            rev::CANSparkMax* rightMotor, rev::CANSparkMax* rightSlaveMotor, driveType t);
-	DalekDrive(rev::CANSparkMax& leftMotor, rev::CANSparkMax& leftSlaveMotor,
-            rev::CANSparkMax& rightMotor, rev::CANSparkMax& rightSlaveMotor, driveType t);
+	DalekDrive(int leftMotorChannel, int leftSlaveMotorChannel, int rightMotorChannel, int rightSlaveMotorChannel, driveType t);
+	DalekDrive(rev::CANSparkMax* leftMotor, rev::CANSparkMax* leftSlaveMotor, rev::CANSparkMax* rightMotor, rev::CANSparkMax* rightSlaveMotor, driveType t);
+	DalekDrive(rev::CANSparkMax& leftMotor, rev::CANSparkMax& leftSlaveMotor, rev::CANSparkMax& rightMotor, rev::CANSparkMax& rightSlaveMotor, driveType t);
 
 	~DalekDrive();
 
-	void TankDrive(frc::Joystick* leftStick, frc::Joystick* rightStick,
-            bool squaredInputs = true);
-	void TankDrive(frc::Joystick& leftStick, frc::Joystick& rightStick,
-            bool squaredInputs = true);
-	void TankDrive(double leftValue, double rightValue,
-            bool squaredInputs = true);
+	void TankDrive(frc::Joystick* leftStick, frc::Joystick* rightStick, bool squaredInputs = true);
+	void TankDrive(frc::Joystick& leftStick, frc::Joystick& rightStick, bool squaredInputs = true);
+	void TankDrive(double leftValue, double rightValue, bool squaredInputs = true);
 
 	void ArcadeDrive(frc::Joystick* stick, bool squaredInputs = true);
 	void ArcadeDrive(frc::Joystick& stick, bool squaredInputs = true);
-	void ArcadeDrive(double moveValue, double rotateValue,
-            bool squaredInputs = true);
+	void ArcadeDrive(double moveValue, double rotateValue, bool squaredInputs = true);
 
 	void Polar(frc::Joystick* stick);
 	void Polar(frc::Joystick& stick);
@@ -64,7 +46,7 @@ class DalekDrive {
 
 	void DriveBaseSquare(int leftSensor, int RightSensor);
 
- private:
+	private:
 	void InitDalekDrive();
 	double squareInput(double v);
 	void printFaults(int side, int faults);

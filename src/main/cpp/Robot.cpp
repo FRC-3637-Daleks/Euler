@@ -1,31 +1,14 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-#include <Euler.h>
-
-#include <iostream>
-
-#include <frc/shuffleboard/Shuffleboard.h>
-#include <frc/shuffleboard/ShuffleboardLayout.h>
-#include <frc/shuffleboard/ShuffleboardTab.h>
-#include <networktables/NetworkTableEntry.h>
-#include <networktables/NetworkTableInstance.h>
+#include "Euler.h"
 
 using namespace frc;
 
 void Robot::RobotInit() 
 {
-  m_drive      = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
-  m_leftStick  = new frc::Joystick(0);
-  m_rightStick = new frc::Joystick(1);
-  
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+	m_xbox 			= new frc::XboxController(0);
+  	m_leftStick  	= new frc::Joystick(1);
+  	m_rightStick 	= new frc::Joystick(2);
+  	m_drive      	= new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
+	m_auton			= new Auton(m_drive);
 }
 
 /**
@@ -54,26 +37,12 @@ void Robot::RobotPeriodic()
  */
 void Robot::AutonomousInit()
 {
-  m_autoSelected = m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
-  std::cout << "Auto selected: " << m_autoSelected << std::endl;
-
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
+	
 }
 
 void Robot::AutonomousPeriodic() 
 {
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
-  m_drive->TankDrive(0.0, 0.0, false);
+	
 }
 
 void Robot::TeleopInit()
@@ -83,18 +52,12 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-    int xOffset; 
-    xOffset = frc::SmartDashboard::GetNumber("X Offset", -1);
-
-    int distance;
-    distance = frc::SmartDashboard::GetNumber("Distance", -1);
-
-    double ratio = pow(2, 0.03 * xOffset / distance);
-
-    frc::SmartDashboard::PutNumber("Ratio", ratio);
-
-    if (m_drive)
+    if (m_drive) {
+		if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
+			m_auton->FollowBall();
+		}
         m_drive->TankDrive(m_leftStick, m_rightStick, true);
+	}
 }
 
 void Robot::TestPeriodic()

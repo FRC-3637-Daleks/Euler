@@ -1,5 +1,4 @@
-#include <Euler.h>
-#include <frc/Joystick.h>
+#include "Euler.h"
 
 using namespace frc;
 using namespace frc2;
