@@ -21,10 +21,10 @@ bool Auton::FollowBall()
 	}
     double ratio = exp(offsetCoefficient * xOffset / distance);
     frc::SmartDashboard::PutNumber("Ratio", ratio);
-	double magnatude = .25;
+	double magnatude = .25; // temp (eventually calculate this number using distance e.g. dist / 5, then set to 1 if greater than 1)
 	frc::SmartDashboard::PutNumber("Magnatude", ratio);
 	if (ratio < 1) {
-		m_drive->TankDrive(magnatude, magnatude / ratio, false);
+		m_drive->TankDrive(magnatude, magnatude * ratio, false);
 	} else {
 		m_drive->TankDrive(magnatude / ratio, magnatude, false);
 	}
