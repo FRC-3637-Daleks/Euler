@@ -315,25 +315,16 @@ bool
 DalekDrive::DriveOk()
 {
 	int mstat;
-#ifdef MOTOR_PRINT
+	#ifdef MOTOR_PRINT
 	// Update dashboard of current draw for motors
-	frc::SmartDashboard::PutNumber("Left Front current", 
-		m_leftMotor[FRONT]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Left Front Encoder position",
-		m_leftEncoder[FRONT]->GetPosition());
-	frc::SmartDashboard::PutNumber("Left Rear Motor current",
-		m_leftMotor[REAR]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Left Rear Encoder position",
-		m_leftEncoder[REAR]->GetPosition());
-
-	frc::SmartDashboard::PutNumber("Right Front current", 
-		m_rightMotor[FRONT]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Right Front Encoder position",
-		m_rightEncoder[FRONT]->GetPosition());
-	frc::SmartDashboard::PutNumber("Right Rear Motor current",
-		m_rightMotor[REAR]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Right Rear Encoder position",
-		m_rightEncoder[REAR]->GetPosition());
+	frc::SmartDashboard::PutNumber("Left Front current",  m_leftMotor[FRONT]->GetOutputCurrent());
+	frc::SmartDashboard::PutNumber("Left Front Encoder position", m_leftEncoder[FRONT]->GetPosition());
+	frc::SmartDashboard::PutNumber("Left Rear Motor current", m_leftMotor[REAR]->GetOutputCurrent());
+	frc::SmartDashboard::PutNumber("Left Rear Encoder position", m_leftEncoder[REAR]->GetPosition());
+	frc::SmartDashboard::PutNumber("Right Front current", m_rightMotor[FRONT]->GetOutputCurrent());
+	frc::SmartDashboard::PutNumber("Right Front Encoder position", m_rightEncoder[FRONT]->GetPosition());
+	frc::SmartDashboard::PutNumber("Right Rear Motor current", m_rightMotor[REAR]->GetOutputCurrent());
+	frc::SmartDashboard::PutNumber("Right Rear Encoder position", m_rightEncoder[REAR]->GetPosition());
 	#endif
 
 	// Check for motor faults

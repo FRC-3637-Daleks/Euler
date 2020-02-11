@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <frc/WPILib.h>
+#include <AHRS.h>
 #include <rev/CANSparkMax.h>
 #include <ctre/Phoenix.h>
 #include <frc/Joystick.h>
@@ -15,7 +16,7 @@
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
 #include "DalekDrive.h"
-#include "Auton.h"
+#include "Ball_Follow.h"
 
 class Robot : public frc::TimedRobot {
 	public:
@@ -32,5 +33,5 @@ class Robot : public frc::TimedRobot {
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
 	DalekDrive *m_drive;
-	Auton *m_auton;
+	Ball_Follow *m_auton;
 };

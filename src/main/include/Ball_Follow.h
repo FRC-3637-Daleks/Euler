@@ -5,15 +5,10 @@
 using namespace std;
 using namespace frc;
 
-class Auton {
+class Ball_Follow {
 	public:
-	SendableChooser<string> m_chooser;
-	string m_autoSelected;
-    string kAutoNameDefault;
-    string kAutoNameCustom;
-
-	Auton(DalekDrive *drive);
-
+	Ball_Follow(DalekDrive *drive);
+	
 	bool FollowBall(); // returns false if ball not found
 	
 	private:
