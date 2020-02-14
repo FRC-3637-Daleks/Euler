@@ -8,7 +8,7 @@ void Robot::RobotInit()
   	m_leftStick  	= new frc::Joystick(1);
   	m_rightStick 	= new frc::Joystick(2);
   	m_drive      	= new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
-	m_auton			= new Ball_Follow(m_drive);
+	m_auton			= new Auton(m_drive);
 }
 
 void Robot::RobotPeriodic()
@@ -18,12 +18,16 @@ void Robot::RobotPeriodic()
 
 void Robot::AutonomousInit()
 {
-	
+	m_auton->AutonCase(0, 0); // the parameters change based on what auton sequence we are going to use
+	waitSeconds = 0;
 }
 
 void Robot::AutonomousPeriodic() 
 {
-	
+	waitSeconds += (double)this->GetPeriod();
+	if (waitSeconds > 0) { // the number 0 change based on how long we want to wait in the auton sequence
+		m_auton->AutonDrive();
+	}
 }
 
 void Robot::TeleopInit()
@@ -40,6 +44,11 @@ void Robot::TeleopPeriodic()
         	m_drive->TankDrive(m_leftStick, m_rightStick, true);
 		}
 	}
+}
+
+void Robot::TestInit()
+{
+
 }
 
 void Robot::TestPeriodic()
