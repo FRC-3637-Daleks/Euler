@@ -75,7 +75,11 @@ bool Auton::turnToFace(double angle)
 	i_temp += p_temp;
 	d_temp = p_temp - prev_error;
 	double pid_result = pTurn * p_temp + iTurn * i_temp + dTurn * d_temp;
-	m_drive->TankDrive(min(pid_result, maxTurnSpeed), -min(pid_result, maxTurnSpeed), false);
+	if (pid_result > 0) {
+		m_drive->TankDrive(min(pid_result, maxTurnSpeed), -min(pid_result, maxTurnSpeed), false);
+	} else {
+		m_drive->TankDrive(max(pid_result, -maxTurnSpeed), -max(pid_result, -maxTurnSpeed), false);
+	}
 	return false;
 }
 
