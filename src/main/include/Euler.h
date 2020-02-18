@@ -8,11 +8,11 @@
 #pragma once
 
 #include <string>
-
+#include <frc/AnalogGyro.h>
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-
+#include <AHRS.h>
 #include <DalekDrive.h>
 
 class Robot : public frc::TimedRobot 
@@ -30,6 +30,8 @@ class Robot : public frc::TimedRobot
     DalekDrive *m_drive;
     frc::Joystick *m_leftStick;
     frc::Joystick *m_rightStick;
+    AHRS *m_ahrs;
+
     frc::SendableChooser<std::string> m_chooser;
     const std::string kAutoNameDefault = "Default";
     const std::string kAutoNameCustom = "My Auto";

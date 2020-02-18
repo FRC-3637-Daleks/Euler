@@ -9,28 +9,21 @@ DalekDrive::DalekDrive(int leftFront, int leftRear,
          int rightFront, int rightRear, DalekDrive::driveType t)
 {
 	m_leftMotor[FRONT]   = new CANSparkMax(leftFront, CANSparkMax::MotorType::kBrushless);
-	if (m_leftMotor[FRONT] == NULL) {
-		printf("Failed to initialize LF motor\n");
-		return;
-	}
+	if (m_leftMotor[FRONT] == NULL)
+		std::bad_alloc();
 	m_rightMotor[FRONT]  = new CANSparkMax(rightFront, CANSparkMax::MotorType::kBrushless);
-	if (m_rightMotor[FRONT] == NULL) {
-		printf("Failed to initialize RF motor\n");
-		return;
-	}
+	if (m_rightMotor[FRONT] == NULL)
+		std::bad_alloc();
 	m_leftMotor[REAR]    = new CANSparkMax(leftRear, CANSparkMax::MotorType::kBrushless);
-	if (m_leftMotor[REAR] == NULL) {
-		printf("Failed to initialize LR motor\n");
-		return;
-	}
+	if (m_leftMotor[REAR] == NULL)
+		std::bad_alloc();
 	m_rightMotor[REAR]   = new CANSparkMax(rightRear, CANSparkMax::MotorType::kBrushless);
-	if (m_rightMotor[REAR] == NULL) {
-		printf("Failed to initialize RR motor\n");
-		return;
-	}
-	m_left               = new SpeedControllerGroup(*m_leftMotor[FRONT], *m_leftMotor[REAR]);
-    m_right              = new SpeedControllerGroup(*m_rightMotor[FRONT], *m_rightMotor[REAR]);
-	m_type               = t;
+	if (m_rightMotor[REAR] == NULL)
+		std::bad_alloc();
+	m_left  = new SpeedControllerGroup(*m_leftMotor[FRONT], *m_leftMotor[REAR]);
+    m_right = new SpeedControllerGroup(*m_rightMotor[FRONT], *m_rightMotor[REAR]);
+	m_type  = t;
+
 	if(t == DalekDrive::driveType::kDifferential) {
 		m_diffdrive      = new DifferentialDrive(*m_left, *m_right);
 	}

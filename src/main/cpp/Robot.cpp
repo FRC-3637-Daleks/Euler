@@ -11,13 +11,23 @@ using namespace frc;
 
 void Robot::RobotInit() 
 {
-  m_drive      = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
-  m_leftStick  = new frc::Joystick(0);
-  m_rightStick = new frc::Joystick(1);
+  try {
+    m_leftStick  = new frc::Joystick(1);
+    m_rightStick = new frc::Joystick(2);
+    m_drive = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
+    m_ahrs  = new AHRS(SPI::Port::kMXP);
+  }
+  catch (std::exception& e) {
+    std::string err_string = "Error instantiating components:  ";
+    err_string += ex.what();
+    DriverStation::ReportError(err_string.c_str());
+  }
   
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  m_ahrs->ZeroYaw();
 }
 
 /**
@@ -75,8 +85,11 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+    static int cnt = 0;
     if (m_drive)
         m_drive->TankDrive(m_leftStick, m_rightStick, false);
+    if((cnt++ % 100) == 0)
+      printf("GetAngle %f\n", m_ahrs->GetYaw());
 }
 
 void Robot::TestPeriodic()
