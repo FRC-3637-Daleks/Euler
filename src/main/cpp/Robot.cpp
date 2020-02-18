@@ -19,7 +19,7 @@ void Robot::RobotInit()
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
-    err_string += ex.what();
+    err_string += e.what();
     DriverStation::ReportError(err_string.c_str());
   }
   
