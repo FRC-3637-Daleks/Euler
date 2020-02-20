@@ -4,9 +4,9 @@ using namespace frc;
 
 void Robot::RobotInit() 
 {
-	m_xbox 			= new frc::XboxController(0);
-  	m_leftStick  	= new frc::Joystick(1);
-  	m_rightStick 	= new frc::Joystick(2);
+	m_xbox 			= new XboxController(0);
+  	m_leftStick  	= new Joystick(1);
+  	m_rightStick 	= new Joystick(2);
   	m_drive      	= new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
 	m_auton			= new Auton(m_drive);
 }
@@ -16,6 +16,7 @@ void Robot::RobotPeriodic()
 
 }
 
+// I think I have some errors here, I wanna test this
 void Robot::AutonomousInit()
 {
 	m_auton->AutonCase(0, 0); // the parameters change based on what auton sequence we are going to use
@@ -57,5 +58,5 @@ void Robot::TestPeriodic()
 }
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() { return StartRobot<Robot>(); }
 #endif

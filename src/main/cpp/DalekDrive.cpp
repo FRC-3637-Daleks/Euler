@@ -67,13 +67,14 @@ DalekDrive::DalekDrive(CANSparkMax& leftFront, CANSparkMax& leftRear, CANSparkMa
 
 DalekDrive::~DalekDrive()
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
+	if (m_type == DalekDrive::driveType::kDifferential) {
 		delete m_diffdrive;
-	else
+	} else {
 		delete m_mecanum;
+	}
     delete m_left;
     delete m_right;
-	if(m_needFree) {
+	if (m_needFree) {
 		delete m_leftMotor[FRONT];
 		delete m_rightMotor[FRONT];
 		delete m_leftMotor[REAR];
@@ -95,48 +96,48 @@ DalekDrive::squareInput(double v)
 void
 DalekDrive::TankDrive(Joystick* leftStick, Joystick* rightStick, bool squaredInputs)
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
-		m_diffdrive->TankDrive(leftStick->GetY(), rightStick->GetY(), squaredInputs);
-	else {
+	if (m_type == DalekDrive::driveType::kDifferential) {
+		m_diffdrive->TankDrive(leftStick->GetY() * MAX_SPEED, rightStick->GetY() * MAX_SPEED, squaredInputs);
+	} else {
 		double l = leftStick->GetY(), r = rightStick->GetY();
 		if(squaredInputs) {
 			l = squareInput(l);
 			r = squareInput(r);
 		}
-		m_leftMotor[FRONT]->Set(l);  m_leftMotor[REAR]->Set(l);
-		m_rightMotor[FRONT]->Set(r); m_rightMotor[REAR]->Set(r);
+		m_left->Set(l * MAX_SPEED);
+		m_right->Set(r * MAX_SPEED);
 	}
 }
 
 void
 DalekDrive::TankDrive(Joystick& leftStick, Joystick& rightStick, bool squaredInputs)
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
-		m_diffdrive->TankDrive(leftStick.GetY(), rightStick.GetY(), squaredInputs);	
-	else {
+	if (m_type == DalekDrive::driveType::kDifferential) {
+		m_diffdrive->TankDrive(leftStick.GetY() * MAX_SPEED, rightStick.GetY() * MAX_SPEED, squaredInputs);	
+	} else {
 		double l = leftStick.GetY(), r = rightStick.GetY();
 		if(squaredInputs) {
 			l = squareInput(l);
 			r = squareInput(r);
 		}
-		m_leftMotor[FRONT]->Set(l);  m_leftMotor[REAR]->Set(l);
-		m_rightMotor[FRONT]->Set(r); m_rightMotor[REAR]->Set(r);
+		m_left->Set(l * MAX_SPEED);
+		m_right->Set(r * MAX_SPEED);
 	}
 }
 
 void
 DalekDrive::TankDrive(double leftValue, double rightValue, bool squaredInputs)
 {
-	if(m_type == DalekDrive::driveType::kDifferential)
-		m_diffdrive->TankDrive(leftValue, rightValue, squaredInputs);
-	else {
+	if (m_type == DalekDrive::driveType::kDifferential) {
+		m_diffdrive->TankDrive(leftValue * MAX_SPEED, rightValue * MAX_SPEED, squaredInputs);
+	} else {
 		double l = leftValue, r = rightValue;
 		if(squaredInputs) {
 			l = squareInput(l);
 			r = squareInput(r);
 		}
-		m_leftMotor[FRONT]->Set(l);  m_leftMotor[REAR]->Set(l);
-		m_rightMotor[FRONT]->Set(r); m_rightMotor[REAR]->Set(r);
+		m_left->Set(l * MAX_SPEED);
+		m_right->Set(r * MAX_SPEED);
 	}
 }
 
@@ -144,7 +145,7 @@ void
 DalekDrive::ArcadeDrive(Joystick* stick, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential) {
-		m_diffdrive->ArcadeDrive(stick->GetX(), stick->GetY(), squaredInputs);
+		m_diffdrive->ArcadeDrive(stick->GetX() * MAX_SPEED, stick->GetY() * MAX_SPEED, squaredInputs);
 	}
 }
 
@@ -152,7 +153,7 @@ void
 DalekDrive::ArcadeDrive(Joystick& stick, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential) {
-		m_diffdrive->ArcadeDrive(stick.GetX(), stick.GetY(), squaredInputs);
+		m_diffdrive->ArcadeDrive(stick.GetX() * MAX_SPEED, stick.GetY() * MAX_SPEED, squaredInputs);
 	}
 }
 
@@ -160,22 +161,22 @@ void
 DalekDrive::ArcadeDrive(double moveValue, double rotateValue, bool squaredInputs)
 {
 	if(m_type == DalekDrive::driveType::kDifferential) {
-		m_diffdrive->ArcadeDrive(moveValue, rotateValue, squaredInputs);
+		m_diffdrive->ArcadeDrive(moveValue * MAX_SPEED, rotateValue, squaredInputs);
 	}
 }
 
 void
 DalekDrive::SetLeftRightMotorOutputs(double leftOutput, double rightOutput)
 {
-	m_leftMotor[FRONT]->Set(leftOutput); m_rightMotor[FRONT]->Set(rightOutput);
-	m_leftMotor[REAR]->Set(leftOutput);  m_rightMotor[REAR]->Set(rightOutput);
+	m_left->Set(leftOutput * MAX_SPEED);
+	m_right->Set(rightOutput * MAX_SPEED);
 }
 
 void 
 DalekDrive::Polar(Joystick* stick)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DrivePolar(stick->GetY(), stick->GetX(), stick->GetTwist());
+		m_mecanum->DrivePolar(stick->GetY() * MAX_SPEED, stick->GetX() * MAX_SPEED, stick->GetTwist());
 	}
 }
 
@@ -183,7 +184,7 @@ void
 DalekDrive::Polar(Joystick& stick)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DrivePolar(stick.GetY(), stick.GetX(), stick.GetTwist());
+		m_mecanum->DrivePolar(stick.GetY() * MAX_SPEED, stick.GetX() * MAX_SPEED, stick.GetTwist());
 	}
 }
 	
@@ -191,7 +192,7 @@ void
 DalekDrive::Polar(double magnitude, double angle, double zRotation)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DrivePolar(magnitude, angle, zRotation);
+		m_mecanum->DrivePolar(magnitude * MAX_SPEED, angle, zRotation);
 	}
 }
 
@@ -199,7 +200,7 @@ void
 DalekDrive::Cartesian(Joystick* stick,	double gyroAngle)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DriveCartesian(-stick->GetX(), stick->GetY(), -stick->GetZ(), gyroAngle);
+		m_mecanum->DriveCartesian(-stick->GetX() * MAX_SPEED, stick->GetY() * MAX_SPEED, -stick->GetZ(), gyroAngle);
 	}
 }
 
@@ -207,7 +208,7 @@ void
 DalekDrive::Cartesian(Joystick& stick, double gyroAngle)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DriveCartesian(-stick.GetX(), stick.GetY(), -stick.GetTwist(), gyroAngle);
+		m_mecanum->DriveCartesian(-stick.GetX() * MAX_SPEED, stick.GetY() * MAX_SPEED, -stick.GetTwist(), gyroAngle);
 	}
 }
 
@@ -215,7 +216,7 @@ void
 DalekDrive::Cartesian(double ySpeed, double xSpeed, double zRotation, double gyroAngle)
 {
 	if(m_type == DalekDrive::driveType::kMecanum) {
-		m_mecanum->DriveCartesian(ySpeed, xSpeed, zRotation, gyroAngle);
+		m_mecanum->DriveCartesian(ySpeed * MAX_SPEED, xSpeed * MAX_SPEED, zRotation, gyroAngle);
 	}
 }
 	
@@ -232,7 +233,6 @@ DalekDrive::SetInvertedMotor(int side, bool isInverted)
 		m_rightMotor[FRONT]->SetInverted(isInverted);
 		m_rightMotor[REAR]->SetInverted(isInverted);
 		break;
-
 	default:
 		break;
 	}
@@ -317,14 +317,14 @@ DalekDrive::DriveOk()
 	int mstat;
 	#ifdef MOTOR_PRINT
 	// Update dashboard of current draw for motors
-	frc::SmartDashboard::PutNumber("Left Front current",  m_leftMotor[FRONT]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Left Front Encoder position", m_leftEncoder[FRONT]->GetPosition());
-	frc::SmartDashboard::PutNumber("Left Rear Motor current", m_leftMotor[REAR]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Left Rear Encoder position", m_leftEncoder[REAR]->GetPosition());
-	frc::SmartDashboard::PutNumber("Right Front current", m_rightMotor[FRONT]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Right Front Encoder position", m_rightEncoder[FRONT]->GetPosition());
-	frc::SmartDashboard::PutNumber("Right Rear Motor current", m_rightMotor[REAR]->GetOutputCurrent());
-	frc::SmartDashboard::PutNumber("Right Rear Encoder position", m_rightEncoder[REAR]->GetPosition());
+	SmartDashboard::PutNumber("Left Front current",  m_leftMotor[FRONT]->GetOutputCurrent());
+	SmartDashboard::PutNumber("Left Front Encoder position", m_leftEncoder[FRONT]->GetPosition());
+	SmartDashboard::PutNumber("Left Rear Motor current", m_leftMotor[REAR]->GetOutputCurrent());
+	SmartDashboard::PutNumber("Left Rear Encoder position", m_leftEncoder[REAR]->GetPosition());
+	SmartDashboard::PutNumber("Right Front current", m_rightMotor[FRONT]->GetOutputCurrent());
+	SmartDashboard::PutNumber("Right Front Encoder position", m_rightEncoder[FRONT]->GetPosition());
+	SmartDashboard::PutNumber("Right Rear Motor current", m_rightMotor[REAR]->GetOutputCurrent());
+	SmartDashboard::PutNumber("Right Rear Encoder position", m_rightEncoder[REAR]->GetPosition());
 	#endif
 
 	// Check for motor faults
@@ -388,4 +388,5 @@ DalekDrive::LidarInRange (int sensorOne, int sensorTwo) {
 		SmartDashboard::PutBoolean("Lidar Status", 1);
 		return true;
 	#endif
+	return false;
 }

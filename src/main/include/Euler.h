@@ -20,7 +20,9 @@
 
 #define PI					3.14159265358979323846
 
-class Robot : public frc::TimedRobot {
+using namespace frc;
+
+class Robot : public TimedRobot {
 	public:
 	void RobotInit() override;
 	void RobotPeriodic() override;
@@ -32,9 +34,9 @@ class Robot : public frc::TimedRobot {
 	void TestPeriodic() override;
 	
 	private:
-	frc::XboxController *m_xbox;
-	frc::Joystick *m_leftStick;
-	frc::Joystick *m_rightStick;
+	XboxController *m_xbox;
+	Joystick *m_leftStick;
+	Joystick *m_rightStick;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 

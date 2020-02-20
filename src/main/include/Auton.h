@@ -2,20 +2,20 @@
 
 #pragma once
 // literally every single #define is a guess, so test one at a time
-#define pixelOffsetCoefficient	.0208 // this is an estimate, however it was using feet, so change to meters
-#define angleOffsetCoefficient	.01
-#define distanceCoefficient		.75
+#define pixelOffsetCoefficient	0.0208 // this is an estimate, however it was using feet, so change to meters
+#define angleOffsetCoefficient	0.01
+#define distanceCoefficient		0.3
 #define turningErrorThreshold	2
-#define distanceErrorThreshold	.2
-#define pTurn					.1
+#define distanceErrorThreshold	0.2
+#define pTurn					0.1
 #define iTurn					0 // probably unnecessary and won't be used
 #define dTurn					0 // probably unnecessary and won't be used
-#define maxTurnSpeed			.5
+#define maxTurnSpeed			0.5
 
 using namespace std;
 using namespace frc;
 
-// all angles are in degrees
+// all angles are in radians
 // all measurements are in meters
 class Auton {
 	public:

@@ -15,8 +15,8 @@ void Auton::AutonCase(int begin, int end)
 {
 	switch (begin) {
 		case 0:
-		target_x = 0; // obviously change all of these as needed
-		target_y = 0;
+		target_x = 2; // obviously change all of these as needed
+		target_y = 2; // this can probably be taken out of the ifs if its the same every time
 		break;
 		case 1:
 		target_x = 0;
@@ -27,7 +27,7 @@ void Auton::AutonCase(int begin, int end)
 		target_y = 0;
 		break;
 	}
-	target_ang = atan2(target_y, target_x) * 180 / PI;
+	target_ang = atan2(target_y, target_x);
 	// here set up what happens at the end (after delivery)
 }
 
@@ -60,6 +60,7 @@ bool Auton::FollowBall()
 {
 	int offset = frc::SmartDashboard::GetNumber("X Offset", 100000), distance = frc::SmartDashboard::GetNumber("Distance", -1);
 	if (offset == 100000 || distance == -1) {
+		m_drive->TankDrive(0.0, 0.0, false);
 		return false;
 	}
     return driveAdjusted(offset, distance, pixelOffsetCoefficient);
@@ -91,12 +92,11 @@ bool Auton::driveToCoordinates(double x, double y)
 bool Auton::driveAdjusted(double offset, double distance, double coefficient)
 {
 	if (distance < distanceErrorThreshold) {
+		m_drive->TankDrive(0.0, 0.0, false);
 		return true;
 	}
-	double ratio = exp(coefficient * offset / distance), magnatude = distance * distanceCoefficient;
-	if (magnatude > 1) {
-		magnatude = 1;
-	}
+	double ratio = exp(coefficient * offset / distance), magnatude = -.2; // keep this for now, change later
+	// seans formula ->  = -.4 / (1 + 4 * exp(-distanceCoefficient * distance));
 	if (ratio < 1) {
 		m_drive->TankDrive(magnatude, magnatude * ratio, false);
 	} else {
@@ -107,9 +107,9 @@ bool Auton::driveAdjusted(double offset, double distance, double coefficient)
 
 double Auton::angleOffset(double angle)
 {
-	double offset = fmod(angle - m_ahrs->GetAngle(), 360);
-	if (offset > 180) {
-		offset -= 360;
+	double offset = fmod(angle - (m_ahrs->GetAngle() + 90) * PI / 180, 360);
+	if (offset > PI) {
+		offset -= PI * 2;
 	}
 	return offset;
 }
