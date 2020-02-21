@@ -19,7 +19,7 @@ void Robot::RobotPeriodic()
 // I think I have some errors here, I wanna test this
 void Robot::AutonomousInit()
 {
-	m_auton->AutonCase(0, 0); // the parameters change based on what auton sequence we are going to use
+	m_auton->AutonCase(2, 0); // the parameters change based on what auton sequence we are going to use
 	waitSeconds = 0;
 }
 

@@ -2,7 +2,8 @@
 
 #pragma once
 // literally every single #define is a guess, so test one at a time
-#define pixelOffsetCoefficient	0.0208 // this is an estimate, however it was using feet, so change to meters
+#define START_DIST				1.524
+#define pixelOffsetCoefficient	0.02 // this is an estimate, however it was using feet, so change to meters
 #define angleOffsetCoefficient	0.01
 #define distanceCoefficient		0.3
 #define turningErrorThreshold	2

@@ -4,7 +4,7 @@
 #define STALL_LIMIT					60
 #define FREE_LIMIT					20
 #define RAMP_RATE					0.5
-#define MAX_SPEED					1
+#define MAX_SPEED					.75
 #define NUM_MOTORS_PER_SIDE			2
 #define LEFT						0
 #define RIGHT						1

@@ -17,6 +17,7 @@
 "C_Cpp.errorSquiggles": "Disabled",
 "files.associations": {
 	"*.inc": "cpp",
-	"cmath": "cpp"
+	"cmath": "cpp",
+	"complex": "cpp"
 }
 }

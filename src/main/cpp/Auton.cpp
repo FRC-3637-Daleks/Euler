@@ -14,19 +14,17 @@ Auton::Auton(DalekDrive *drive)
 void Auton::AutonCase(int begin, int end)
 {
 	switch (begin) {
-		case 0:
-		target_x = 2; // obviously change all of these as needed
-		target_y = 2; // this can probably be taken out of the ifs if its the same every time
-		break;
 		case 1:
-		target_x = 0;
-		target_y = 0;
+		target_x = -2; // obviously change all of these as needed
 		break;
 		case 2:
 		target_x = 0;
-		target_y = 0;
+		break;
+		case 3:
+		target_x = 5;
 		break;
 	}
+	target_y = START_DIST;
 	target_ang = atan2(target_y, target_x);
 	// here set up what happens at the end (after delivery)
 }
@@ -86,6 +84,8 @@ bool Auton::turnToFace(double angle)
 
 bool Auton::driveToCoordinates(double x, double y)
 {
+	SmartDashboard::PutNumber("angle offset", angleOffset(target_ang) * 180 / PI);
+	SmartDashboard::PutNumber("dist offset", sqrt(pow(target_x - m_ahrs->GetDisplacementX(), 2) + pow(target_y - m_ahrs->GetDisplacementY(), 2))); // this is not correct currently
 	return driveAdjusted(angleOffset(target_ang), sqrt(pow(target_x - m_ahrs->GetDisplacementX(), 2) + pow(target_y - m_ahrs->GetDisplacementY(), 2)), angleOffsetCoefficient);
 }
 
@@ -95,8 +95,11 @@ bool Auton::driveAdjusted(double offset, double distance, double coefficient)
 		m_drive->TankDrive(0.0, 0.0, false);
 		return true;
 	}
-	double ratio = exp(coefficient * offset / distance), magnatude = -.2; // keep this for now, change later
+	double ratio = exp(coefficient * offset / distance), magnatude = (distance + .3) / -8.0; // this needs to be changed
 	// seans formula ->  = -.4 / (1 + 4 * exp(-distanceCoefficient * distance));
+	if (magnatude < -.5) {
+		magnatude = -.5;
+	}
 	if (ratio < 1) {
 		m_drive->TankDrive(magnatude, magnatude * ratio, false);
 	} else {
@@ -107,7 +110,7 @@ bool Auton::driveAdjusted(double offset, double distance, double coefficient)
 
 double Auton::angleOffset(double angle)
 {
-	double offset = fmod(angle - (m_ahrs->GetAngle() + 90) * PI / 180, 360);
+	double offset = fmod(angle - (m_ahrs->GetAngle()) * PI / 180, 360);
 	if (offset > PI) {
 		offset -= PI * 2;
 	}
