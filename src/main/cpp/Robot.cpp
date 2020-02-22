@@ -11,7 +11,7 @@ void Robot::RobotInit()
     m_drive = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
     m_ahrs  = new AHRS(SPI::Port::kMXP);
     m_auton = new Auton(m_drive);
-    m_talon = new WPI_TalonSRX(m_talon);
+    m_belt = new WPI_TalonSRX(6);
     m_cinput = new frc::DigitalInput(0);
   }
   catch (std::exception& e) {
@@ -58,7 +58,7 @@ void Robot::TeleopPeriodic()
 		}
 	}
       if (m_cinput->Get()) {
-        m_talon-> Set(1);
+        m_belt-> Set(1.0);
     }
 }
 

@@ -12,6 +12,7 @@
 #include <frc/SpeedControllerGroup.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/drive/MecanumDrive.h>
+#include <frc/DigitalInput.h>
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
 #include <AHRS.h>
@@ -37,7 +38,7 @@ class Robot : public TimedRobot {
 	frc::XboxController *m_xbox;
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
-	WPI_TalonSRX *m_talon;
+	WPI_TalonSRX *m_belt;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 	AHRS *m_ahrs;
