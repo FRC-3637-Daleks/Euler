@@ -1,81 +1,44 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-#include <Euler.h>
+#include "Euler.h"
 
 using namespace frc;
 
 void Robot::RobotInit() 
 {
   try {
+    m_xbox       = new frc::XboxController(0);
     m_leftStick  = new frc::Joystick(1);
     m_rightStick = new frc::Joystick(2);
     m_drive = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
     m_ahrs  = new AHRS(SPI::Port::kMXP);
+    m_auton = new Auton(m_drive);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
     err_string += e.what();
     DriverStation::ReportError(err_string.c_str());
   }
-  
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   m_ahrs->ZeroYaw();
 }
 
-/**
- * This function is called every robot packet, no matter the mode. Use
- * this for items like diagnostics that you want ran during disabled,
- * autonomous, teleoperated and test.
- *
- * <p> This runs after the mode specific periodic functions, but before
- * LiveWindow and SmartDashboard integrated updating.
- */
 void Robot::RobotPeriodic()
 {
 
 }
 
-/**
- * This autonomous (along with the chooser code above) shows how to select
- * between different autonomous modes using the dashboard. The sendable chooser
- * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
- * remove all of the chooser code and uncomment the GetString line to get the
- * auto name from the text box below the Gyro.
- *
- * You can add additional auto modes by adding additional comparisons to the
- * if-else structure below with additional strings. If using the SendableChooser
- * make sure to add them to the chooser code above as well.
- */
+// I think I have some errors here, I wanna test this
 void Robot::AutonomousInit()
 {
-  m_autoSelected = m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
-  std::cout << "Auto selected: " << m_autoSelected << std::endl;
-
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
+	m_auton->AutonCase(2, 0); // the parameters change based on what auton sequence we are going to use
+	waitSeconds = 0;
 }
 
 void Robot::AutonomousPeriodic() 
 {
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
-  m_drive->TankDrive(0.0, 0.0, false);
+	waitSeconds += (double)this->GetPeriod();
+	if (waitSeconds > 0) { // the number 0 change based on how long we want to wait in the auton sequence
+		m_auton->AutonDrive();
+	}
 }
 
 void Robot::TeleopInit()
@@ -85,11 +48,18 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-    static int cnt = 0;
-    if (m_drive)
-        m_drive->TankDrive(m_leftStick, m_rightStick, false);
-    if((cnt++ % 100) == 0)
-      printf("GetAngle %f\n", m_ahrs->GetYaw());
+    if (m_drive) {
+		if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
+			m_auton->FollowBall();
+		} else {
+        	m_drive->TankDrive(m_leftStick, m_rightStick, true);
+		}
+	}
+}
+
+void Robot::TestInit()
+{
+
 }
 
 void Robot::TestPeriodic()
@@ -98,5 +68,5 @@ void Robot::TestPeriodic()
 }
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() { return StartRobot<Robot>(); }
 #endif

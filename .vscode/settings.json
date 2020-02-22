@@ -16,6 +16,9 @@
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
   "C_Cpp.errorSquiggles": "Disabled",
   "files.associations": {
-    "new": "cpp"
+    "new": "cpp",
+    "*.inc": "cpp",
+    "cmath": "cpp",
+    "complex": "cpp"
   }
 }
