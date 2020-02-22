@@ -37,9 +37,11 @@ class Robot : public TimedRobot {
 	frc::XboxController *m_xbox;
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
+	WPI_TalonSRX *m_talon;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+	frc::DigitalInput *m_cinput;
 
 	double waitSeconds;
 };

@@ -11,6 +11,8 @@ void Robot::RobotInit()
     m_drive = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
     m_ahrs  = new AHRS(SPI::Port::kMXP);
     m_auton = new Auton(m_drive);
+    m_talon = new WPI_TalonSRX(m_talon);
+    m_cinput = new frc::DigitalInput(0);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -55,6 +57,9 @@ void Robot::TeleopPeriodic()
         	m_drive->TankDrive(m_leftStick, m_rightStick, true);
 		}
 	}
+      if (m_cinput->Get()) {
+        m_talon-> Set(1);
+    }
 }
 
 void Robot::TestInit()
