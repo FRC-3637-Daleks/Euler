@@ -20,6 +20,7 @@
 #include <ctre/Phoenix.h>
 #include <DalekDrive.h>
 #include <Auton.h>
+#include <BallIntake.h>
 
 #define PI	3.14159265358979323846
 
@@ -38,11 +39,8 @@ class Robot : public TimedRobot {
 	frc::XboxController *m_xbox;
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
-	WPI_TalonSRX *m_belt;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 	AHRS *m_ahrs;
-	frc::DigitalInput *m_cinput;
-
 	double waitSeconds;
 };
