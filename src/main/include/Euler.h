@@ -55,6 +55,16 @@ enum DIGITAL_IO {
 	CONVEYOR_STOP = 1
 };
 
+enum SOLENOID_IDS {
+	CLIMB_DEPLOY = 0,
+	RATCHET_LOCK = 1,
+	INTAKE_DEPLOY = 2,
+	SPINNER_DEPLOY = 3,
+	SPINNER_EXHAUST = 4,
+	CLIMB_EXHAUST = 5,
+	NUM_SOLENOIDS
+};
+
 class Robot : public TimedRobot {
 	public:
 	void RobotInit() override;
@@ -76,6 +86,7 @@ class Robot : public TimedRobot {
 	Auton *m_auton;
 	AHRS *m_ahrs;
 	BallIntake *m_ball_intake;
+	frc::Solenoid *m_solenoids[NUM_SOLENOIDS];
 
 	double waitSeconds;
 };

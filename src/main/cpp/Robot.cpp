@@ -4,6 +4,7 @@ using namespace frc;
 
 void Robot::RobotInit() 
 {
+  int i;
   try {
     m_xbox       = new frc::XboxController(XBOX);
     m_leftStick  = new frc::Joystick(LEFT_JOY);
@@ -12,7 +13,11 @@ void Robot::RobotInit()
     m_ahrs       = new AHRS(SPI::Port::kMXP);
     m_auton      = new Auton(m_drive);
     m_compressor = new frc::Compressor(PCM);
-	m_ball_intake= new BallIntake(m_xbox);
+	  m_ball_intake  = new BallIntake(m_xbox);
+    for(i=0; i<NUM_SOLENOIDS; i++) {
+      m_solenoids[i] = new frc::Solenoid(PCM, i);
+      m_solenoids[i]->Set(true);
+    }
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -58,8 +63,15 @@ void Robot::TeleopPeriodic()
 		}
 	}
 
-	m_ball_intake->Tick();
-
+	// m_ball_intake->Tick();
+  if(m_xbox->GetBButton()) {
+    m_solenoids[1]->Set(true);
+    m_solenoids[5]->Set(false);
+  }
+  if(m_xbox->GetYButton()) {
+    m_solenoids[1]->Set(false);
+    m_solenoids[5]->Set(true);
+  }
 }
 
 void Robot::TestInit()
