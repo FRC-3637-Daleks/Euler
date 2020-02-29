@@ -1,8 +1,19 @@
 #include "Euler.h"
 
+BallIntake::BallIntake(frc::XboxController *xbox, int ballCount)
+{
+    init(xbox, ballCount);
+}
+
 BallIntake::BallIntake(frc::XboxController *xbox)
 {
-    m_conveyor = new WPI_TalonSRX(CONVEYOR_BELT);
+    init(xbox, 0);
+}
+
+void
+BallIntake:: init(frc::XboxController *xbox, int ballCount)
+{
+	m_conveyor = new WPI_TalonSRX(CONVEYOR_BELT);
     m_pickupSensor = new frc::DigitalInput(CONVEYOR_INPUT);
     m_releaseSensor = new frc::DigitalInput(CONVEYOR_STOP);
     m_intake = new WPI_TalonSRX(ROLLER_BAR);
@@ -10,7 +21,9 @@ BallIntake::BallIntake(frc::XboxController *xbox)
     m_xbox = xbox;
     triggerHeld = false;
 	triggerOn = false;
-    ballCount = 0;
+	eject = false;
+	seeBall = false;
+    this->ballCount = ballCount;
     pickupPhase = 0;
 }
 
@@ -24,15 +37,47 @@ BallIntake::~BallIntake()
 }
 
 void
+BallIntake::StartIntake()
+{
+	triggerOn = true;
+}
+
+void
+BallIntake::StopIntake()
+{
+	triggerOn = false;
+}
+
+int
+BallIntake::GetBallCount()
+{
+	return ballCount;
+}
+
+void
+BallIntake::Yeet() {
+	eject = true;
+}
+
+void
 BallIntake::Tick()
 {
 	SmartDashboard::PutBoolean("Input Sensed", m_pickupSensor->Get());
 	SmartDashboard::PutBoolean("Output Sensed", m_releaseSensor->Get());
 
-	if (m_xbox->GetYButton()) {
-		m_conveyor->Set(1);
-		m_intake->Set(0);
+	if (m_xbox->GetYButton() || eject) {
 		pickupPhase = 0;
+		if (seeBall && m_releaseSensor->Get()) {
+			ballCount--;
+		}
+		if (eject && ballCount == 0) {
+			m_conveyor->Set(0);
+			m_intake->Set(0);
+			eject = false;
+		} else {
+			m_conveyor->Set(1);
+			m_intake->Set(1);
+		}
 	} else {
     	if (m_xbox->GetBButton()) {
 			if (!triggerHeld) {
@@ -49,7 +94,7 @@ BallIntake::Tick()
 	    	        if (!m_pickupSensor->Get()) {
         	            ballCount++;
         	            pickupPhase++;
-						m_conveyor->Set(0.5 + .02 * ballCount);
+						m_conveyor->Set(0.5 + .0 * ballCount);
 						m_intake->Set(0);
 		            } else {
 						m_intake->Set(0.5);
@@ -62,7 +107,7 @@ BallIntake::Tick()
 						m_conveyor->Set(0);
 						m_intake->Set(0);
     	            } else {
-						m_conveyor->Set(0.5 + .02 * ballCount);
+						m_conveyor->Set(0.5 + .075 * ballCount);
 						m_intake->Set(0);
 					}
     	            break;
@@ -82,5 +127,6 @@ BallIntake::Tick()
 			}
     	}
 	}
-	m_ramp->Set(false); // this is for now
+	m_ramp->Set(true);
+	seeBall = !m_releaseSensor->Get();
 }

@@ -12,7 +12,7 @@ void Robot::RobotInit()
     m_ahrs       = new AHRS(SPI::Port::kMXP);
     m_auton      = new Auton(m_drive);
     m_compressor = new frc::Compressor(PCM);
-	m_ball_intake= new BallIntake(m_xbox);
+	m_ball_intake= new BallIntake(m_xbox, 0);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -57,8 +57,8 @@ void Robot::TeleopPeriodic()
         	m_drive->TankDrive(m_leftStick, m_rightStick, true);
 		}
 	}
-
 	m_ball_intake->Tick();
+	SmartDashboard::PutNumber("ballCount", m_ball_intake->GetBallCount());
 
 }
 
