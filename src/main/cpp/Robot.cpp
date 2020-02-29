@@ -45,7 +45,6 @@ void Robot::AutonomousInit()
   auton_start = (int)frc::SmartDashboard::GetData("Start Auton");
   auton_end =   (int)frc::SmartDashboard::GetData("End Auton");
   waitSeconds = (int)frc::SmartDashboard::GetData("Delay");
-  waitSeconds *= -1;
 	m_auton->AutonCase((double)auton_start, (double)auton_end); // the parameters change based on what auton sequence we are going to use
 }
 
