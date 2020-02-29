@@ -12,7 +12,9 @@ void Robot::RobotInit()
     m_ahrs       = new AHRS(SPI::Port::kMXP);
     m_auton      = new Auton(m_drive);
     m_belt       = new WPI_TalonSRX(CONVEYOR_BELT);
-    m_cinput     = new frc::DigitalInput(CONVEYOR_INPUT);
+    m_roller     = new WPI_TalonSRX(ROLLER_BAR);
+    m_converyorSensor = new frc::DigitalInput(CONVEYOR_STOP);
+	  m_pickupSensor    = new frc::DigitalInput(CONVEYOR_INPUT);
     m_compressor = new frc::Compressor(PCM);
   }
   catch (std::exception& e) {
@@ -20,8 +22,8 @@ void Robot::RobotInit()
     err_string += e.what();
     DriverStation::ReportError(err_string.c_str());
   }
-
   m_ahrs->ZeroYaw();
+  m_compressor->Start();
 }
 
 void Robot::RobotPeriodic()
@@ -32,7 +34,7 @@ void Robot::RobotPeriodic()
 // I think I have some errors here, I wanna test this
 void Robot::AutonomousInit()
 {
-	m_auton->AutonCase(2, 0); // the parameters change based on what auton sequence we are going to use
+	m_auton->AutonCase(1, 0); // the parameters change based on what auton sequence we are going to use
 	waitSeconds = 0;
 }
 
@@ -58,6 +60,44 @@ void Robot::TeleopPeriodic()
         	m_drive->TankDrive(m_leftStick, m_rightStick, true);
 		}
 	}
+
+	if (m_xbox->GetBButtonPressed()) {
+		m_roller->Set(1.0);
+		SmartDashboard::PutBoolean("b button pressed", true);
+	} else {
+		m_roller->Set(0.0);
+		SmartDashboard::PutBoolean("b button pressed", false);
+	}
+
+	if (m_xbox->GetAButtonPressed()) {
+		m_belt->Set(1.0);
+		SmartDashboard::PutBoolean("a button pressed", true);
+	} else {
+		m_belt->Set(0.0);
+		SmartDashboard::PutBoolean("a button pressed", false);
+	}
+
+	if (m_xbox->GetYButtonPressed()) {
+		m_roller->Set(-0.5);
+		SmartDashboard::PutBoolean("y button pressed", true);
+	} else {
+		m_roller->Set(0.0);
+		SmartDashboard::PutBoolean("y button pressed", false);
+	}
+	
+	if (m_xbox->GetXButtonPressed()) {
+		m_belt->Set(-0.5);
+		SmartDashboard::PutBoolean("x button pressed", true);
+	} else {
+		m_belt->Set(0.0);
+		SmartDashboard::PutBoolean("x button pressed", false);
+	}
+
+	if (m_converyorSensor->Get()) {
+		m_belt->Set(1.0);
+		SmartDashboard::PutBoolean("Input Sensed", true);
+	}
+
 }
 
 void Robot::TestInit()

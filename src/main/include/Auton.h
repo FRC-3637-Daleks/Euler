@@ -3,12 +3,12 @@
 #pragma once
 // literally every single #define is a guess, so test one at a time
 #define START_DIST				1.524
-#define pixelOffsetCoefficient	0.02 // this is an estimate, however it was using feet, so change to meters
+#define pixelOffsetCoefficient	0.025
 #define angleOffsetCoefficient	0.01
 #define distanceCoefficient		0.3
-#define turningErrorThreshold	2
+#define turningErrorThreshold	0.05
 #define distanceErrorThreshold	0.2
-#define pTurn					0.1
+#define pTurn					2 // this number depends on the speed of the robot (weight and handicap)
 #define iTurn					0 // probably unnecessary and won't be used
 #define dTurn					0 // probably unnecessary and won't be used
 #define maxTurnSpeed			0.5

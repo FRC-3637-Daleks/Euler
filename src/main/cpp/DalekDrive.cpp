@@ -107,6 +107,8 @@ DalekDrive::TankDrive(Joystick* leftStick, Joystick* rightStick, bool squaredInp
 {
 	if (m_type == DalekDrive::driveType::kDifferential) {
 		m_diffdrive->TankDrive(leftStick->GetY() * MAX_SPEED, rightStick->GetY() * MAX_SPEED, squaredInputs);
+		SmartDashboard::PutNumber("joystick left", leftStick->GetY());
+		SmartDashboard::PutNumber("right joystick", rightStick->GetY());
 	} else {
 		double l = leftStick->GetY(), r = rightStick->GetY();
 		if(squaredInputs) {

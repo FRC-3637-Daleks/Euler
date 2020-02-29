@@ -32,7 +32,7 @@ enum CAN_IDS {
 	LEFT_REAR_DRIVE = 2, 
 	RIGHT_FRONT_DRIVE = 3, 
 	RIGHT_REAR_DRIVE = 4,
-	BALL_PICKUP = 5, 
+	ROLLER_BAR = 5, 
 	CONVEYOR_BELT = 6, 
 	LIFT = 7, 
 	TROLLEY = 8, 
@@ -71,9 +71,13 @@ class Robot : public TimedRobot {
 	frc::DigitalInput *m_cinput;
 	frc::Compressor *m_compressor;
 	WPI_TalonSRX *m_belt;
+	WPI_TalonSRX *m_roller;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+	rev::CANSparkMax *spark;
+    rev::CANEncoder *sparkEncoder;
+	frc::DigitalInput *m_pickupSensor, *m_converyorSensor;
 
 	double waitSeconds;
 };
