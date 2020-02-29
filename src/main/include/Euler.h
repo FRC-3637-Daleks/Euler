@@ -13,6 +13,8 @@
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/drive/MecanumDrive.h>
 #include <frc/DigitalInput.h>
+#include <frc/Solenoid.h>
+#include <frc/Compressor.h>
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
 #include <AHRS.h>
@@ -25,7 +27,7 @@
 #define PI	3.14159265358979323846
 
 // CAN BUS devices
-enum CAN_IDS { 
+enum CAN_IDS {
 	LEFT_FRONT_DRIVE = 1,
 	LEFT_REAR_DRIVE = 2, 
 	RIGHT_FRONT_DRIVE = 3, 
@@ -34,7 +36,8 @@ enum CAN_IDS {
 	CONVEYOR_BELT = 6, 
 	LIFT = 7, 
 	TROLLEY = 8, 
-	SPINNER = 9
+	SPINNER = 9,
+	PCM = 10
  };
 
 // Devices connected to driverstation
@@ -66,6 +69,7 @@ class Robot : public TimedRobot {
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
 	frc::DigitalInput *m_cinput;
+	frc::Compressor *m_compressor;
 	WPI_TalonSRX *m_belt;
 	DalekDrive *m_drive;
 	Auton *m_auton;

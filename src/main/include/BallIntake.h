@@ -3,16 +3,16 @@
 using namespace frc;
 
 class BallIntake {
-
 	public:
-    void BallIntake();
+    BallIntake(frc::Joystick *joy);
+	~BallIntake();
     void Tick();
 	
 	private:
-	WPI_TalonSRX *m_belt, m_intake;
+	WPI_TalonSRX *m_belt, *m_intake;
 	frc::DigitalInput *m_conveyorSensor, *m_pickupSensor, *m_coutput;
-	frc::Solenoid::Solenoid *m_ramp;
+	frc::Solenoid *m_ramp;
+	frc::Joystick *m_stick;
     int ballCount, pickupPhase;
     bool isPressed;
-
 };
