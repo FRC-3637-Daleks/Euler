@@ -18,6 +18,7 @@
 #include <rev/CANSparkMax.h>
 #include <ctre/Phoenix.h>
 #include <DalekDrive.h>
+#include <RaspberryPi.h>
 #include <Auton.h>
 
 #define PI	3.14159265358979323846
@@ -38,8 +39,11 @@ class Robot : public TimedRobot {
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
 	DalekDrive *m_drive;
+	RaspberryPi *m_pi;
 	Auton *m_auton;
 	AHRS *m_ahrs;
 
 	double waitSeconds;
+	int auton_start;
+	int auton_end;
 };

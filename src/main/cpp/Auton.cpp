@@ -1,118 +1,124 @@
 #include "Euler.h"
 
-Auton::Auton(DalekDrive *drive)
+Auton::Auton(DalekDrive *drive, RaspberryPi *pi)
 {
 	m_drive			= drive;
 	m_ahrs         	= new AHRS(SPI::Port::kMXP);
 	m_ahrs->Reset();
 	m_ahrs->ResetDisplacement();
+	m_pi            = pi; 
 
-	p_temp = 0; i_temp = 0; d_temp = 0;
 	auton_phase = 0;
+	pickupBalls = false;
 }
 
 void Auton::AutonCase(int begin, int end)
 {
 	switch (begin) {
-		case 1:
-		target_x = -2; // obviously change all of these as needed
+		case 1: //right sensor
+		enter_target_x = -2; //need sensor
 		break;
-		case 2:
-		target_x = 0;
+		case 2: //staright on
+		enter_target_x = 0;
 		break;
-		case 3:
-		target_x = 5;
+		case 3: //left sensor
+		enter_target_x = 5; //need sensor
 		break;
 	}
-	target_y = START_DIST;
-	target_ang = atan2(target_y, target_x);
-	// here set up what happens at the end (after delivery)
+
+	enter_target_y = START_DIST;
+	
+	switch (end) {
+		case 1:
+			exit_target_x = -2.009775;
+			exit_target_y = 3.048;
+			break;
+		case 2:
+			exit_target_x = 3.17931851816;
+			exit_target_y = 5.248275;
+			break;
+		case 3:
+			exit_target_x = 3.851275;
+			exit_target_y = 5.248275;
+			break;
+	}
+
+	enter_target_ang = atan2(enter_target_y, enter_target_x);
+	exit_target_ang  = atan2(exit_target_x, exit_target_y);
+	//here set up what happens at the end (after delivery)
 }
 
 void Auton::AutonDrive()
 {
+	// if (auton_phase==frc::SmartDashboard::GetData("Delay Phase"))
+	// waitSeconds += (double)this->GetPeriod();
 	switch (auton_phase) {
 		case 0: // turn to target
-		if (turnToFace(target_ang)) {
+		if (m_pi->turnToFace(enter_target_ang)) {
 			auton_phase++;
 		}
 		break;
 		case 1: // drive to target
-		if (driveToCoordinates(target_x, target_y)) {
+		if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
 			auton_phase++;;
 		}
 		break;
 		case 2: // turn straight
-		if (turnToFace(0)) {
+		if (m_pi->turnToFace(0)) {
 			auton_phase++;
 		}
 		break;
 		case 3: // drive to wall
-
-		break;
+			if (driveToCoordinates(0, 0.762, 0)) {
+				auton_phase++;
+			}
+			break;
+		case 4: //delivers balls
+			//Dump balls here
+			auton_phase++;
+			break;
+		case 5: //give us a little space to turn around (can be lowered)
+			if (driveToCoordinates(0, -0.762, 0)) {
+				auton_phase++;
+			}
+			break;
+		case 6: //turn around
+			if (m_pi->turnToFace(PI)) {
+				auton_phase++;
+			}
+			break;		
+		case 7: //face exit
+			if (m_pi->turnToFace(exit_target_ang)) {
+				auton_phase++;
+			}
+			break;
+		case 8: //drive towards exit
+			if (driveToCoordinates(exit_target_x, exit_target_y, exit_target_ang)) {
+				auton_phase++;
+			}
+			break;
+		case 9: //collect balls if warrented
+			if (!pickupBalls || m_pi->FollowBall()) {
+				//collect ball
+				ballTracker++;//Get true value from Josh
+				if (ballTracker == 3)
+					auton_phase++;
+			}
+			break;
+		case 10: //end
+			//return true;
+			break;
 		// add more once we get there
 	}
+	
+	frc::SmartDashboard::PutNumber ("Auton Phase", auton_phase);
+
+	//return false;
 }
 
-bool Auton::FollowBall()
+bool Auton::driveToCoordinates(double x, double y, double angle)
 {
-	int offset = frc::SmartDashboard::GetNumber("X Offset", 100000), distance = frc::SmartDashboard::GetNumber("Distance", -1);
-	if (offset == 100000 || distance == -1) {
-		m_drive->TankDrive(0.0, 0.0, false);
-		return false;
-	}
-    return driveAdjusted(offset, distance, pixelOffsetCoefficient);
-}
-
-bool Auton::turnToFace(double angle)
-{
-	double prev_error = p_temp;
-	p_temp = angleOffset(angle);
-	if (abs(p_temp) < turningErrorThreshold) {
-		return true;
-	}
-	i_temp += p_temp;
-	d_temp = p_temp - prev_error;
-	double pid_result = pTurn * p_temp + iTurn * i_temp + dTurn * d_temp;
-	if (pid_result > 0) {
-		m_drive->TankDrive(min(pid_result, maxTurnSpeed), -min(pid_result, maxTurnSpeed), false);
-	} else {
-		m_drive->TankDrive(max(pid_result, -maxTurnSpeed), -max(pid_result, -maxTurnSpeed), false);
-	}
-	return false;
-}
-
-bool Auton::driveToCoordinates(double x, double y)
-{
-	SmartDashboard::PutNumber("angle offset", angleOffset(target_ang) * 180 / PI);
-	SmartDashboard::PutNumber("dist offset", sqrt(pow(target_x - m_ahrs->GetDisplacementX(), 2) + pow(target_y - m_ahrs->GetDisplacementY(), 2))); // this is not correct currently
-	return driveAdjusted(angleOffset(target_ang), sqrt(pow(target_x - m_ahrs->GetDisplacementX(), 2) + pow(target_y - m_ahrs->GetDisplacementY(), 2)), angleOffsetCoefficient);
-}
-
-bool Auton::driveAdjusted(double offset, double distance, double coefficient)
-{
-	if (distance < distanceErrorThreshold) {
-		m_drive->TankDrive(0.0, 0.0, false);
-		return true;
-	}
-	double ratio = exp(coefficient * offset / distance), magnatude = (distance + .3) / -8.0; // this needs to be changed
-	// seans formula ->  = -.4 / (1 + 4 * exp(-distanceCoefficient * distance));
-	if (magnatude < -.5) {
-		magnatude = -.5;
-	}
-	if (ratio < 1) {
-		m_drive->TankDrive(magnatude, magnatude * ratio, false);
-	} else {
-		m_drive->TankDrive(magnatude / ratio, magnatude, false);
-	}
-	return false;
-}
-
-double Auton::angleOffset(double angle)
-{
-	double offset = fmod(angle - (m_ahrs->GetAngle()) * PI / 180, 360);
-	if (offset > PI) {
-		offset -= PI * 2;
-	}
-	return offset;
+	SmartDashboard::PutNumber("angle offset", m_pi->angleOffset(angle) * 180 / PI);
+	SmartDashboard::PutNumber("dist offset", sqrt(pow(x - m_ahrs->GetDisplacementX(), 2) + pow(y - m_ahrs->GetDisplacementY(), 2))); // this is not correct currently
+	return m_pi->driveAdjusted(m_pi->angleOffset(angle), sqrt(pow(x - m_ahrs->GetDisplacementX(), 2) + pow(y - m_ahrs->GetDisplacementY(), 2)), angleOffsetCoefficient);
 }
