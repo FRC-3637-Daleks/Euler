@@ -98,19 +98,22 @@ void Auton::AutonDrive()
 			case 8: //drive towards exit
 				if (driveToCoordinates(exit_target_x, exit_target_y, exit_target_ang)) {
 					auton_phase++;
+					if (!pickupBalls)
+						auton_phase++;
 				}
 				break;
 			case 9: //collect balls if warrented
 				//I don't know if the followBall will work the way I put it
-				if (!pickupBalls || m_pi->FollowBall()) {
-					if (m_ballIntake->GetBallCount() == 3 || !pickupBalls)
-						auton_phase++;
+				if (m_pi->FollowBall()) {
+					//Currently not in code
 					m_ballIntake->startIntake();
+					if (m_ballIntake->GetBallCount() == 3)
+						auton_phase++;
 				}
 				break;
-			case 10: //end
-				//return true;
-				break;
+			// default: //end
+			// 	//return true;
+			// 	break;
 			// add more once we get there
 		}
 	}

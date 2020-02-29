@@ -11,10 +11,11 @@ class BallIntake {
 
 	
 	private:
-	WPI_TalonSRX *m_belt, *m_intake;
-	frc::DigitalInput *m_conveyorSensor, *m_pickupSensor, *m_coutput;
-	frc::Solenoid *m_ramp;
-    int pickupPhase;
-    bool isPressed;
-	int ballCount;
+	WPI_TalonSRX *m_intake, *m_conveyor;
+	DigitalInput *m_pickupSensor, *m_releaseSensor;
+	Solenoid *m_ramp;
+	XboxController *m_xbox;
+
+    int ballCount, pickupPhase;
+    bool triggerHeld, triggerOn;
 };
