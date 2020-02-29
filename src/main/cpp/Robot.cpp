@@ -69,6 +69,7 @@ void Robot::TeleopPeriodic()
 		m_talon2->Set(0.0);
 		SmartDashboard::PutBoolean("a button pressed", false);
 	}
+
 	if (m_xbox->GetYButtonPressed()) {
 		m_talon1->Set(-0.5);
 		SmartDashboard::PutBoolean("y button pressed", true);
@@ -76,6 +77,7 @@ void Robot::TeleopPeriodic()
 		m_talon1->Set(0.0);
 		SmartDashboard::PutBoolean("y button pressed", false);
 	}
+	
 	if (m_xbox->GetXButtonPressed()) {
 		m_talon2->Set(-0.5);
 		SmartDashboard::PutBoolean("x button pressed", true);
