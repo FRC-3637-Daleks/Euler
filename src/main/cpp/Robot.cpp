@@ -63,15 +63,7 @@ void Robot::TeleopPeriodic()
 		}
 	}
 
-	// m_ball_intake->Tick();
-  if(m_xbox->GetBButton()) {
-    m_solenoids[1]->Set(true);
-    m_solenoids[5]->Set(false);
-  }
-  if(m_xbox->GetYButton()) {
-    m_solenoids[1]->Set(false);
-    m_solenoids[5]->Set(true);
-  }
+  m_ball_intake->Tick();
 }
 
 void Robot::TestInit()
