@@ -11,11 +11,8 @@ void Robot::RobotInit()
     m_drive      = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
     m_ahrs       = new AHRS(SPI::Port::kMXP);
     m_auton      = new Auton(m_drive);
-    m_belt       = new WPI_TalonSRX(CONVEYOR_BELT);
-    m_roller     = new WPI_TalonSRX(ROLLER_BAR);
-    m_converyorSensor = new frc::DigitalInput(CONVEYOR_STOP);
-	  m_pickupSensor    = new frc::DigitalInput(CONVEYOR_INPUT);
     m_compressor = new frc::Compressor(PCM);
+	m_ball_intake= new BallIntake(m_xbox);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -61,42 +58,7 @@ void Robot::TeleopPeriodic()
 		}
 	}
 
-	if (m_xbox->GetBButtonPressed()) {
-		m_roller->Set(1.0);
-		SmartDashboard::PutBoolean("b button pressed", true);
-	} else {
-		m_roller->Set(0.0);
-		SmartDashboard::PutBoolean("b button pressed", false);
-	}
-
-	if (m_xbox->GetAButtonPressed()) {
-		m_belt->Set(1.0);
-		SmartDashboard::PutBoolean("a button pressed", true);
-	} else {
-		m_belt->Set(0.0);
-		SmartDashboard::PutBoolean("a button pressed", false);
-	}
-
-	if (m_xbox->GetYButtonPressed()) {
-		m_roller->Set(-0.5);
-		SmartDashboard::PutBoolean("y button pressed", true);
-	} else {
-		m_roller->Set(0.0);
-		SmartDashboard::PutBoolean("y button pressed", false);
-	}
-	
-	if (m_xbox->GetXButtonPressed()) {
-		m_belt->Set(-0.5);
-		SmartDashboard::PutBoolean("x button pressed", true);
-	} else {
-		m_belt->Set(0.0);
-		SmartDashboard::PutBoolean("x button pressed", false);
-	}
-
-	if (m_converyorSensor->Get()) {
-		m_belt->Set(1.0);
-		SmartDashboard::PutBoolean("Input Sensed", true);
-	}
+	m_ball_intake->Tick();
 
 }
 

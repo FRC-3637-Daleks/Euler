@@ -1,3 +1,5 @@
+// SPINNER MUST BE NEGATIVE
+
 #pragma once
 
 #include <iostream>
@@ -70,14 +72,10 @@ class Robot : public TimedRobot {
 	frc::Joystick *m_rightStick;
 	frc::DigitalInput *m_cinput;
 	frc::Compressor *m_compressor;
-	WPI_TalonSRX *m_belt;
-	WPI_TalonSRX *m_roller;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 	AHRS *m_ahrs;
-	rev::CANSparkMax *spark;
-    rev::CANEncoder *sparkEncoder;
-	frc::DigitalInput *m_pickupSensor, *m_converyorSensor;
+	BallIntake *m_ball_intake;
 
 	double waitSeconds;
 };

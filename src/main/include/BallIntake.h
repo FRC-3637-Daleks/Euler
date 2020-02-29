@@ -4,15 +4,16 @@ using namespace frc;
 
 class BallIntake {
 	public:
-    BallIntake(frc::Joystick *joy);
+    BallIntake(frc::XboxController *xbox);
 	~BallIntake();
     void Tick();
 	
 	private:
-	WPI_TalonSRX *m_belt, *m_intake;
-	frc::DigitalInput *m_conveyorSensor, *m_pickupSensor, *m_coutput;
-	frc::Solenoid *m_ramp;
-	frc::Joystick *m_stick;
+	WPI_TalonSRX *m_intake, *m_conveyor;
+	DigitalInput *m_pickupSensor, *m_releaseSensor;
+	Solenoid *m_ramp;
+	XboxController *m_xbox;
+
     int ballCount, pickupPhase;
-    bool isPressed;
+    bool triggerHeld, triggerOn;
 };
