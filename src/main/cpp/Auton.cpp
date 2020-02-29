@@ -1,15 +1,17 @@
 #include "Euler.h"
 
-Auton::Auton(DalekDrive *drive, RaspberryPi *pi)
+Auton::Auton(DalekDrive *drive, RaspberryPi *pi, BallIntake *ballIntake)
 {
 	m_drive			= drive;
 	m_ahrs         	= new AHRS(SPI::Port::kMXP);
+	m_ahrs->ZeroYaw();
 	m_ahrs->Reset();
 	m_ahrs->ResetDisplacement();
 	m_pi            = pi; 
+	m_ballIntake    = ballIntake;
 
 	auton_phase = 0;
-	pickupBalls = false;
+	pickupBalls = frc::SmartDashboard::GetData("Pickup Ball");
 }
 
 void Auton::AutonCase(int begin, int end)
@@ -28,16 +30,16 @@ void Auton::AutonCase(int begin, int end)
 
 	enter_target_y = START_DIST;
 	
-	switch (end) {
-		case 1:
+	switch (end) {//Might've screwed up calculations by having us move back a little
+		case 1: //Enemy trench
 			exit_target_x = -2.009775;
 			exit_target_y = 3.048;
 			break;
-		case 2:
+		case 2: //Shield Generator
 			exit_target_x = 3.17931851816;
 			exit_target_y = 5.248275;
 			break;
-		case 3:
+		case 3: //Our trench
 			exit_target_x = 3.851275;
 			exit_target_y = 5.248275;
 			break;
@@ -52,66 +54,82 @@ void Auton::AutonDrive()
 {
 	// if (auton_phase==frc::SmartDashboard::GetData("Delay Phase"))
 	// waitSeconds += (double)this->GetPeriod();
-	switch (auton_phase) {
-		case 0: // turn to target
-		if (m_pi->turnToFace(enter_target_ang)) {
-			auton_phase++;
-		}
-		break;
-		case 1: // drive to target
-		if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
-			auton_phase++;;
-		}
-		break;
-		case 2: // turn straight
-		if (m_pi->turnToFace(0)) {
-			auton_phase++;
-		}
-		break;
-		case 3: // drive to wall
-			if (driveToCoordinates(0, 0.762, 0)) {
+	if (!m_ahrs->IsCalibrating()) {
+		switch (auton_phase) {
+			case 0: // turn to target
+			if (m_pi->turnToFace(enter_target_ang)) {
 				auton_phase++;
 			}
 			break;
-		case 4: //delivers balls
-			//Dump balls here
-			auton_phase++;
+			case 1: // drive to target
+			if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
+				auton_phase++;;
+			}
 			break;
-		case 5: //give us a little space to turn around (can be lowered)
-			if (driveToCoordinates(0, -0.762, 0)) {
+			case 2: // turn straight
+			if (m_pi->turnToFace(0)) {
 				auton_phase++;
 			}
 			break;
-		case 6: //turn around
-			if (m_pi->turnToFace(PI)) {
-				auton_phase++;
-			}
-			break;		
-		case 7: //face exit
-			if (m_pi->turnToFace(exit_target_ang)) {
-				auton_phase++;
-			}
-			break;
-		case 8: //drive towards exit
-			if (driveToCoordinates(exit_target_x, exit_target_y, exit_target_ang)) {
-				auton_phase++;
-			}
-			break;
-		case 9: //collect balls if warrented
-			if (!pickupBalls || m_pi->FollowBall()) {
-				//collect ball
-				ballTracker++;//Get true value from Josh
-				if (ballTracker == 3)
+			case 3: // drive to wall
+				if (driveToCoordinates(0, 0.762, 0)) {
 					auton_phase++;
-			}
-			break;
-		case 10: //end
-			//return true;
-			break;
-		// add more once we get there
+				}
+				break;
+			case 4: //delivers balls
+				//Dump balls here
+				auton_phase++;
+				break;
+			case 5: //give us a little space to turn around (can be lowered)
+				if (driveToCoordinates(0, -0.762, 0)) {
+					auton_phase++;
+				}
+				break;
+			case 6: //turn around
+				if (m_pi->turnToFace(PI)) {
+					auton_phase++;
+				}
+				break;		
+			case 7: //face exit
+				if (m_pi->turnToFace(exit_target_ang)) {
+					auton_phase++;
+				}
+				break;
+			case 8: //drive towards exit
+				if (driveToCoordinates(exit_target_x, exit_target_y, exit_target_ang)) {
+					auton_phase++;
+				}
+				break;
+			case 9: //collect balls if warrented
+				//I don't know if the followBall will work the way I put it
+				if (!pickupBalls || m_pi->FollowBall()) {
+	
+					//Get method that picks up balls
+					if (m_ballIntake->GetBallCount() == 3 || !pickupBalls)
+						auton_phase++;
+				}
+				break;
+			case 10: //end
+				//return true;
+				break;
+			// add more once we get there
+		}
 	}
 	
 	frc::SmartDashboard::PutNumber ("Auton Phase", auton_phase);
+	//frc::SmartDashboard::PutNumber("enterance angle offset", angleOffset(enter_target_ang) * 180 / PI);
+	//frc::SmartDashboard::PutNumber("exit angle offset", angleOffset(exit_target_ang) * 180 / PI);
+	frc::SmartDashboard::PutNumber("ahrs_ang", m_ahrs->GetAngle() + 90);
+	frc::SmartDashboard::PutNumber("enter_target_ang", enter_target_ang);
+	frc::SmartDashboard::PutNumber("exit_target_ang", exit_target_ang);
+	frc::SmartDashboard::PutNumber("enter_target_x", enter_target_x);
+	frc::SmartDashboard::PutNumber("exit_target_x", exit_target_x);
+	frc::SmartDashboard::PutNumber("enter_target_y", enter_target_y);
+	frc::SmartDashboard::PutNumber("exit_target_y", exit_target_y);
+	frc::SmartDashboard::PutNumber("displ_x", m_ahrs->GetDisplacementX());
+	frc::SmartDashboard::PutNumber("displ_y", m_ahrs->GetDisplacementY());
+	frc::SmartDashboard::PutNumber("enter dist offset", sqrt(pow(enter_target_x - m_ahrs->GetDisplacementX(), 2) + pow(enter_target_y - m_ahrs->GetDisplacementY(), 2)));
+	frc::SmartDashboard::PutNumber("exit dist offset", sqrt(pow(exit_target_x - m_ahrs->GetDisplacementX(), 2) + pow(exit_target_y - m_ahrs->GetDisplacementY(), 2)));
 
 	//return false;
 }

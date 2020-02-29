@@ -5,13 +5,19 @@ using namespace frc;
 void Robot::RobotInit() 
 {
   try {
-    m_xbox       = new frc::XboxController(0);
-    m_leftStick  = new frc::Joystick(1);
-    m_rightStick = new frc::Joystick(2);
-    m_drive = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
-    m_ahrs  = new AHRS(SPI::Port::kMXP);
-    m_pi    = new RaspberryPi(m_drive);
-    m_auton = new Auton(m_drive, m_pi);
+    m_xbox       = new frc::XboxController(XBOX);
+    m_leftStick  = new frc::Joystick(LEFT_JOY);
+    m_rightStick = new frc::Joystick(RIGHT_JOY);
+    m_drive      = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
+    m_ahrs       = new AHRS(SPI::Port::kMXP);
+    m_pi         = new RaspberryPi(m_drive);
+    m_ballIntake = new BallIntake();
+    m_auton      = new Auton(m_drive, 	m_pi, m_ballIntake);
+    m_belt       = new WPI_TalonSRX(CONVEYOR_BELT);
+    m_roller     = new WPI_TalonSRX(ROLLER_BAR);
+    m_converyorSensor = new frc::DigitalInput(CONVEYOR_STOP);
+	  m_pickupSensor    = new frc::DigitalInput(CONVEYOR_INPUT);
+    m_compressor = new frc::Compressor(PCM);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -24,8 +30,11 @@ void Robot::RobotInit()
   frc::SmartDashboard::PutNumber("Delay", 0);
   frc::SmartDashboard::PutNumber("Delay Phase", 0);
   frc::SmartDashboard::PutNumber("Auton Phase", 0);
+  frc::SmartDashboard::PutBoolean("Pickup Ball", false);
+  frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
 
   m_ahrs->ZeroYaw();
+  m_compressor->Start();
 }
 
 void Robot::RobotPeriodic()
@@ -65,6 +74,44 @@ void Robot::TeleopPeriodic()
         	m_drive->TankDrive(m_leftStick, m_rightStick, true);
 		}
 	}
+
+	if (m_xbox->GetBButtonPressed()) {
+		m_roller->Set(1.0);
+		SmartDashboard::PutBoolean("b button pressed", true);
+	} else {
+		m_roller->Set(0.0);
+		SmartDashboard::PutBoolean("b button pressed", false);
+	}
+
+	if (m_xbox->GetAButtonPressed()) {
+		m_belt->Set(1.0);
+		SmartDashboard::PutBoolean("a button pressed", true);
+	} else {
+		m_belt->Set(0.0);
+		SmartDashboard::PutBoolean("a button pressed", false);
+	}
+
+	if (m_xbox->GetYButtonPressed()) {
+		m_roller->Set(-0.5);
+		SmartDashboard::PutBoolean("y button pressed", true);
+	} else {
+		m_roller->Set(0.0);
+		SmartDashboard::PutBoolean("y button pressed", false);
+	}
+	
+	if (m_xbox->GetXButtonPressed()) {
+		m_belt->Set(-0.5);
+		SmartDashboard::PutBoolean("x button pressed", true);
+	} else {
+		m_belt->Set(0.0);
+		SmartDashboard::PutBoolean("x button pressed", false);
+	}
+
+	if (m_converyorSensor->Get()) {
+		m_belt->Set(1.0);
+		SmartDashboard::PutBoolean("Input Sensed", true);
+	}
+
 }
 
 void Robot::TestInit()
