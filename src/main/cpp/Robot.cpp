@@ -5,12 +5,14 @@ using namespace frc;
 void Robot::RobotInit() 
 {
   try {
-    m_xbox       = new frc::XboxController(0);
-    m_leftStick  = new frc::Joystick(1);
-    m_rightStick = new frc::Joystick(2);
-    m_drive = new DalekDrive(1, 2, 3, 4, DalekDrive::driveType::kDifferential);
+    m_xbox       = new frc::XboxController(XBOX);
+    m_leftStick  = new frc::Joystick(LEFT_JOY);
+    m_rightStick = new frc::Joystick(RIGHT_JOY);
+    m_drive = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
     m_ahrs  = new AHRS(SPI::Port::kMXP);
     m_auton = new Auton(m_drive);
+    m_belt = new WPI_TalonSRX(CONVEYOR_BELT);
+    m_cinput = new frc::DigitalInput(CONVEYOR_INPUT);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";

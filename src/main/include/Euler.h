@@ -24,6 +24,32 @@
 
 #define PI	3.14159265358979323846
 
+// CAN BUS devices
+enum CAN_IDS { 
+	LEFT_FRONT_DRIVE = 1,
+	LEFT_REAR_DRIVE = 2, 
+	RIGHT_FRONT_DRIVE = 3, 
+	RIGHT_REAR_DRIVE = 4,
+	BALL_PICKUP = 5, 
+	CONVEYOR_BELT = 6, 
+	LIFT = 7, 
+	TROLLEY = 8, 
+	SPINNER = 9
+ };
+
+// Devices connected to driverstation
+enum DRIVER_STATION_IO {
+	XBOX = 0, 
+	LEFT_JOY = 1, 
+	RIGHT_JOY = 2
+};
+
+// Digitial Input
+enum DIGITAL_IO {
+	CONVEYOR_INPUT = 0,
+	CONVEYOR_STOP = 1
+};
+
 class Robot : public TimedRobot {
 	public:
 	void RobotInit() override;
@@ -39,8 +65,11 @@ class Robot : public TimedRobot {
 	frc::XboxController *m_xbox;
 	frc::Joystick *m_leftStick;
 	frc::Joystick *m_rightStick;
+	frc::DigitalInput *m_cinput;
+	WPI_TalonSRX *m_belt;
 	DalekDrive *m_drive;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+
 	double waitSeconds;
 };
