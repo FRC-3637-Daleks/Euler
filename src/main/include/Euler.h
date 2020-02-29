@@ -39,6 +39,13 @@ class Robot : public TimedRobot {
 	Joystick *m_rightStick;
 	DalekDrive *m_drive;
 	Auton *m_auton;
+	rev::CANSparkMax *spark;
+    rev::CANEncoder *sparkEncoder;
+    WPI_TalonSRX *talon;
+	WPI_TalonSRX *m_talon1;
+	WPI_TalonSRX *m_talon2;
+	frc::DigitalInput *m_pickupSensor, *m_converyorSensor;
+
 
 	double waitSeconds;
 };
