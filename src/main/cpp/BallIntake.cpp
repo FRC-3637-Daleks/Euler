@@ -18,6 +18,7 @@ BallIntake:: init(frc::XboxController *xbox, int ballCount)
     m_releaseSensor = new frc::DigitalInput(CONVEYOR_STOP);
     m_intake = new WPI_TalonSRX(ROLLER_BAR);
     m_ramp = new frc::Solenoid(0);
+    ballCount = (int)frc::SmartDashboard::GetData("Starting # of Balls");
     m_xbox = xbox;
     triggerHeld = false;
 	triggerOn = false;

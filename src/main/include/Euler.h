@@ -23,8 +23,9 @@
 #include <rev/CANSparkMax.h>
 #include <ctre/Phoenix.h>
 #include <DalekDrive.h>
-#include <Auton.h>
+#include <RaspberryPi.h>
 #include <BallIntake.h>
+#include <Auton.h>
 
 #define PI	3.14159265358979323846
 
@@ -73,9 +74,13 @@ class Robot : public TimedRobot {
 	frc::DigitalInput *m_cinput;
 	frc::Compressor *m_compressor;
 	DalekDrive *m_drive;
+	RaspberryPi *m_pi;
+	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
 	BallIntake *m_ball_intake;
 
 	double waitSeconds;
+	int auton_start, auton_end;
+	bool pickupBall;
 };
