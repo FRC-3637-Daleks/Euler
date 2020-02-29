@@ -103,10 +103,9 @@ void Auton::AutonDrive()
 			case 9: //collect balls if warrented
 				//I don't know if the followBall will work the way I put it
 				if (!pickupBalls || m_pi->FollowBall()) {
-	
-					//Get method that picks up balls
 					if (m_ballIntake->GetBallCount() == 3 || !pickupBalls)
 						auton_phase++;
+					m_ballIntake->startIntake();
 				}
 				break;
 			case 10: //end

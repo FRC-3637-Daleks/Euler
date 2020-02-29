@@ -11,7 +11,7 @@ void Robot::RobotInit()
     m_drive      = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
     m_ahrs       = new AHRS(SPI::Port::kMXP);
     m_pi         = new RaspberryPi(m_drive);
-    m_ballIntake = new BallIntake();
+    m_ballIntake = new BallIntake(m_xbox);
     m_auton      = new Auton(m_drive, 	m_pi, m_ballIntake);
     m_belt       = new WPI_TalonSRX(CONVEYOR_BELT);
     m_roller     = new WPI_TalonSRX(ROLLER_BAR);

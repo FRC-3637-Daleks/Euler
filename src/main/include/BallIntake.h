@@ -4,7 +4,7 @@ using namespace frc;
 
 class BallIntake {
 	public:
-    BallIntake();
+    BallIntake(frc::XboxController *xbox);
 	~BallIntake();
     void Tick();
 	int GetBallCount();
