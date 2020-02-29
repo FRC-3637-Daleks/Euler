@@ -4,24 +4,20 @@ using namespace frc;
 
 void Robot::RobotInit() 
 {
-  int i;
   try {
-    m_xbox       = new frc::XboxController(XBOX);
-    m_leftStick  = new frc::Joystick(LEFT_JOY);
-    m_rightStick = new frc::Joystick(RIGHT_JOY);
-    m_drive      = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
-    m_ahrs       = new AHRS(SPI::Port::kMXP);
-    m_auton      = new Auton(m_drive);
-    m_compressor = new frc::Compressor(PCM);
-<<<<<<< HEAD
-	  m_ball_intake  = new BallIntake(m_xbox);
-    for(i=0; i<NUM_SOLENOIDS; i++) {
+    m_xbox        = new frc::XboxController(XBOX);
+    m_leftStick   = new frc::Joystick(LEFT_JOY);
+    m_rightStick  = new frc::Joystick(RIGHT_JOY);
+    m_drive       = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
+    m_ahrs        = new AHRS(SPI::Port::kMXP);
+    m_pi          = new RaspberryPi(m_drive);
+    m_compressor  = new frc::Compressor(PCM);
+	  m_ballIntake  = new BallIntake(m_xbox);
+    m_auton       = new Auton(m_drive, m_pi, m_ballIntake);
+    for(int i=0; i<NUM_SOLENOIDS; i++) {
       m_solenoids[i] = new frc::Solenoid(PCM, i);
       m_solenoids[i]->Set(true);
     }
-=======
-	m_ball_intake= new BallIntake(m_xbox, 0);
->>>>>>> 7264a1c74d4c1bb1c56cd99629d1c18251756f6c
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -77,14 +73,9 @@ void Robot::TeleopPeriodic()
         	m_drive->TankDrive(m_leftStick, m_rightStick, true);
 		}
 	}
-<<<<<<< HEAD
+	m_ballIntake->Tick();
+	SmartDashboard::PutNumber("ballCount", m_ballIntake->GetBallCount());
 
-  m_ball_intake->Tick();
-=======
-	m_ball_intake->Tick();
-	SmartDashboard::PutNumber("ballCount", m_ball_intake->GetBallCount());
-
->>>>>>> 7264a1c74d4c1bb1c56cd99629d1c18251756f6c
 }
 
 void Robot::TestInit()

@@ -106,7 +106,7 @@ void Auton::AutonDrive()
 				//I don't know if the followBall will work the way I put it
 				if (m_pi->FollowBall()) {
 					//Currently not in code
-					m_ballIntake->startIntake();
+					m_ballIntake->StartIntake();
 					if (m_ballIntake->GetBallCount() == 3)
 						auton_phase++;
 				}

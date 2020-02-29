@@ -88,7 +88,6 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
-	BallIntake *m_ball_intake;
 	frc::Solenoid *m_solenoids[NUM_SOLENOIDS];
 
 	double waitSeconds;
