@@ -78,7 +78,8 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
-	BallIntake *m_ball_intake;
+	BallIntake *
+	m_ball_intake;
 
 	double waitSeconds;
 	int auton_start, auton_end;

@@ -13,8 +13,8 @@ void Robot::RobotInit()
     m_pi         = new RaspberryPi(m_drive);
     m_ballIntake = new BallIntake(m_xbox);
     m_auton      = new Auton(m_drive, m_pi, m_ballIntake);
-	m_compressor = new frc::Compressor(PCM);
-	m_ball_intake= new BallIntake(m_xbox);
+	  m_compressor = new frc::Compressor(PCM);
+  	m_ball_intake= new BallIntake(m_xbox);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";

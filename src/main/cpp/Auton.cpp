@@ -20,7 +20,7 @@ void Auton::AutonCase(int begin, int end)
 		case 1: //right sensor
 		enter_target_x = -2; //need sensor
 		break;
-		case 2: //staright on
+		case 2: //straight on
 		enter_target_x = 0;
 		break;
 		case 3: //left sensor
@@ -30,8 +30,8 @@ void Auton::AutonCase(int begin, int end)
 
 	enter_target_y = START_DIST;
 	
-	switch (end) {//Might've screwed up calculations by having us move back a little
-		case 1: //Enemy trench
+	switch (end) {
+		case 1: //Our trench
 			exit_target_x = -2.009775;
 			exit_target_y = 3.048;
 			break;
@@ -39,7 +39,7 @@ void Auton::AutonCase(int begin, int end)
 			exit_target_x = 3.17931851816;
 			exit_target_y = 5.248275;
 			break;
-		case 3: //Our trench
+		case 3: //Enemy trench
 			exit_target_x = 3.851275;
 			exit_target_y = 5.248275;
 			break;
@@ -77,7 +77,8 @@ void Auton::AutonDrive()
 				}
 				break;
 			case 4: //delivers balls
-				//Dump balls here
+				//Not in the code yet
+				m_ballIntake->Yeet();
 				auton_phase++;
 				break;
 			case 5: //give us a little space to turn around (can be lowered)
