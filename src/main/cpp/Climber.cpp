@@ -8,6 +8,7 @@ Climber::Climber(frc::XboxController *xbox)
 void
 Climber:: init(frc::XboxController *xbox)
 {
+    m_xbox = xbox;
 	m_trolley = new WPI_TalonSRX(TROLLEY);
     m_lift = new WPI_TalonSRX(LIFT);
 	m_ratchet_solenoid= new frc::Solenoid(PCM, RATCHET_LOCK);

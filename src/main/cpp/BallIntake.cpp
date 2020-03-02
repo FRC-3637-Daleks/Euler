@@ -19,7 +19,7 @@ BallIntake:: init(frc::XboxController *xbox, int ballCount)
     m_intake = new WPI_TalonSRX(ROLLER_BAR);
     //ballCount = (int)frc::SmartDashboard::GetData("Starting # of Balls");
 	intake_solenoid = new frc::DoubleSolenoid(PCM, INTAKE_DEPLOY,INTAKE_EXHAUST);
-    intake_solenoid->Set(frc::DoubleSolenoid::kForward);
+    intake_solenoid->Set(frc::DoubleSolenoid::kReverse);
     m_xbox = xbox;
     triggerHeld = false;
 	triggerOn = false;

@@ -67,6 +67,7 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+
     if (m_drive) {
 		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
 		    m_pi->FollowBall();
@@ -74,9 +75,12 @@ void Robot::TeleopPeriodic()
         m_drive->TankDrive(m_leftStick, m_rightStick, true);
     }
 	}
+
 	m_ballIntake->Tick();
+          
   m_spinner->Tick();
   m_climber->Tick();
+
 }
 
 void Robot::TestInit()

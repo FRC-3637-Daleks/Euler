@@ -8,6 +8,7 @@ Spinner::Spinner(frc::XboxController *xbox)
 void
 Spinner:: init(frc::XboxController *xbox)
 {
+    m_xbox = xbox;
 	m_spinner = new WPI_TalonSRX(SPINNER);
    	m_spinner_solenoid = new frc::DoubleSolenoid(PCM, SPINNER_DEPLOY, SPINNER_EXHAUST);
     m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
