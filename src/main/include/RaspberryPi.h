@@ -9,7 +9,7 @@ using namespace frc;
 
 class RaspberryPi {
 	public:
-    RaspberryPi(DalekDrive *drive);
+    RaspberryPi(DalekDrive *drive, AHRS * ahrs);
 
 	bool FollowBall(); // returns false if ball not found [maybe change this to print to dashboard, then return if we can pick up a ball]
     bool turnToFace(double angle);

@@ -16,8 +16,8 @@ class BallIntake {
 	private:
 	WPI_TalonSRX *m_intake, *m_conveyor;
 	DigitalInput *m_pickupSensor, *m_releaseSensor;
-	Solenoid *m_ramp;
 	XboxController *m_xbox;
+	frc::DoubleSolenoid *intake_solenoid;
 
     int ballCount, pickupPhase;
     bool triggerHeld, triggerOn, eject, seeBall;

@@ -5,19 +5,24 @@ using namespace frc;
 void Robot::RobotInit() 
 {
   try {
+    frc::SmartDashboard::PutNumber("Start Auton", 2);
+    frc::SmartDashboard::PutNumber("End Auton", 2);
+    frc::SmartDashboard::PutNumber("Delay", 0);
+    frc::SmartDashboard::PutNumber("Delay Phase", 0);
+    frc::SmartDashboard::PutNumber("Auton Phase", 0);
+    frc::SmartDashboard::PutBoolean("Pickup Ball", false);
+    frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
     m_xbox        = new frc::XboxController(XBOX);
     m_leftStick   = new frc::Joystick(LEFT_JOY);
     m_rightStick  = new frc::Joystick(RIGHT_JOY);
     m_drive       = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
     m_ahrs        = new AHRS(SPI::Port::kMXP);
-    m_pi          = new RaspberryPi(m_drive);
+    m_pi          = new RaspberryPi(m_drive, m_ahrs);
     m_compressor  = new frc::Compressor(PCM);
 	  m_ballIntake  = new BallIntake(m_xbox);
-    m_auton       = new Auton(m_drive, m_pi, m_ballIntake);
-    for(int i=0; i<NUM_SOLENOIDS; i++) {
-      m_solenoids[i] = new frc::Solenoid(PCM, i);
-      m_solenoids[i]->Set(true);
-    }
+    m_auton       = new Auton(m_drive, m_ahrs, m_pi, m_ballIntake);
+    m_climber     = new Climber(m_xbox);
+    m_spinner     = new Spinner(m_xbox);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -25,15 +30,11 @@ void Robot::RobotInit()
     DriverStation::ReportError(err_string.c_str());
   }
 
-  frc::SmartDashboard::PutNumber("Start Auton", 2);
-  frc::SmartDashboard::PutNumber("End Auton", 2);
-  frc::SmartDashboard::PutNumber("Delay", 0);
-  frc::SmartDashboard::PutNumber("Delay Phase", 0);
-  frc::SmartDashboard::PutNumber("Auton Phase", 0);
-  frc::SmartDashboard::PutBoolean("Pickup Ball", false);
-  frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
+
 
   m_ahrs->ZeroYaw();
+  m_ahrs->Reset();
+	m_ahrs->ResetDisplacement();
   m_compressor->Start();
 }
 
@@ -67,15 +68,15 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
     if (m_drive) {
-		if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
-			m_pi->FollowBall();
-		} else {
-        	m_drive->TankDrive(m_leftStick, m_rightStick, true);
-		}
+		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
+		    m_pi->FollowBall();
+    } else {
+        m_drive->TankDrive(m_leftStick, m_rightStick, true);
+    }
 	}
 	m_ballIntake->Tick();
-	SmartDashboard::PutNumber("ballCount", m_ballIntake->GetBallCount());
-
+  m_spinner->Tick();
+  m_climber->Tick();
 }
 
 void Robot::TestInit()
@@ -87,6 +88,7 @@ void Robot::TestPeriodic()
 {
 
 }
+
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return StartRobot<Robot>(); }

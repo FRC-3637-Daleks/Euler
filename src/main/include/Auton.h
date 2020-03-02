@@ -22,7 +22,7 @@ using namespace frc;
 // all measurements are in meters
 class Auton {
 	public:
-	Auton(DalekDrive *drive, RaspberryPi *pi, BallIntake *ballIntake);
+	Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIntake);
 	
 	void AutonCase(int begin, int end); // this must be called before AutonDrive()
 	void AutonDrive();

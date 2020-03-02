@@ -1,12 +1,9 @@
 #include "Euler.h"
 
-Auton::Auton(DalekDrive *drive, RaspberryPi *pi, BallIntake *ballIntake)
+Auton::Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIntake)
 {
 	m_drive			= drive;
-	m_ahrs         	= new AHRS(SPI::Port::kMXP);
-	m_ahrs->ZeroYaw();
-	m_ahrs->Reset();
-	m_ahrs->ResetDisplacement();
+	m_ahrs			= ahrs;
 	m_pi            = pi; 
 	m_ballIntake    = ballIntake;
 

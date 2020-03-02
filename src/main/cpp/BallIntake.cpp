@@ -17,8 +17,9 @@ BallIntake:: init(frc::XboxController *xbox, int ballCount)
     m_pickupSensor = new frc::DigitalInput(CONVEYOR_INPUT);
     m_releaseSensor = new frc::DigitalInput(CONVEYOR_STOP);
     m_intake = new WPI_TalonSRX(ROLLER_BAR);
-    m_ramp = new frc::Solenoid(0);
-    ballCount = (int)frc::SmartDashboard::GetData("Starting # of Balls");
+    //ballCount = (int)frc::SmartDashboard::GetData("Starting # of Balls");
+	intake_solenoid = new frc::DoubleSolenoid(PCM, INTAKE_DEPLOY,INTAKE_EXHAUST);
+    intake_solenoid->Set(frc::DoubleSolenoid::kForward);
     m_xbox = xbox;
     triggerHeld = false;
 	triggerOn = false;
@@ -34,7 +35,6 @@ BallIntake::~BallIntake()
     free(m_pickupSensor);
     free(m_releaseSensor);
     free(m_intake);
-    free(m_ramp);
 }
 
 void
@@ -65,10 +65,19 @@ BallIntake::Tick()
 {
 	SmartDashboard::PutBoolean("Input Sensed", m_pickupSensor->Get());
 	SmartDashboard::PutBoolean("Output Sensed", m_releaseSensor->Get());
+	SmartDashboard::PutNumber("ballCount", GetBallCount());
+	
+	if (m_xbox->GetBumperPressed(frc::GenericHID::kRightHand)) {
+    	if (intake_solenoid->Get() == frc::DoubleSolenoid::kForward){
+      		intake_solenoid->Set(frc::DoubleSolenoid::kReverse);
+    	} else {
+      		intake_solenoid->Set(frc::DoubleSolenoid::kForward);
+    	}
+ 	}
 
-	if (m_xbox->GetYButton() || eject) {
+	if (m_xbox->GetTriggerAxis(frc::GenericHID::kLeftHand) || eject) {
 		pickupPhase = 0;
-		if (seeBall && m_releaseSensor->Get()) {
+		if (seeBall && m_releaseSensor->Get() && ballCount > 0) {
 			ballCount--;
 		}
 		if (eject && ballCount == 0) {
@@ -80,7 +89,7 @@ BallIntake::Tick()
 			m_intake->Set(1);
 		}
 	} else {
-    	if (m_xbox->GetBButton()) {
+    	if (m_xbox->GetTriggerAxis(frc::GenericHID::kRightHand)) {
 			if (!triggerHeld) {
 				triggerOn = !triggerOn;
 			}
@@ -98,6 +107,7 @@ BallIntake::Tick()
 						m_conveyor->Set(0.5 + .0 * ballCount);
 						m_intake->Set(0);
 		            } else {
+						intake_solenoid->Set(frc::DoubleSolenoid::kForward);
 						m_intake->Set(0.5);
 						m_conveyor->Set(0);
 					}
@@ -128,6 +138,5 @@ BallIntake::Tick()
 			}
     	}
 	}
-	m_ramp->Set(true);
 	seeBall = !m_releaseSensor->Get();
 }
