@@ -5,13 +5,6 @@ using namespace frc;
 void Robot::RobotInit() 
 {
   try {
-    frc::SmartDashboard::PutNumber("Start Auton", 2);
-    frc::SmartDashboard::PutNumber("End Auton", 2);
-    frc::SmartDashboard::PutNumber("Delay", 0);
-    frc::SmartDashboard::PutNumber("Delay Phase", 0);
-    frc::SmartDashboard::PutNumber("Auton Phase", 0);
-    frc::SmartDashboard::PutBoolean("Pickup Ball", false);
-    frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
     m_xbox        = new frc::XboxController(XBOX);
     m_leftStick   = new frc::Joystick(LEFT_JOY);
     m_rightStick  = new frc::Joystick(RIGHT_JOY);
@@ -29,8 +22,13 @@ void Robot::RobotInit()
     err_string += e.what();
     DriverStation::ReportError(err_string.c_str());
   }
-
-
+  frc::SmartDashboard::PutNumber("Start Auton", 2);
+  frc::SmartDashboard::PutNumber("End Auton", 2);
+  frc::SmartDashboard::PutNumber("Delay", 0);
+  frc::SmartDashboard::PutNumber("Delay Phase", 0);
+  frc::SmartDashboard::PutNumber("Auton Phase", 0);
+  frc::SmartDashboard::PutBoolean("Pickup Ball", false);
+  frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
 
   m_ahrs->ZeroYaw();
   m_ahrs->Reset();
