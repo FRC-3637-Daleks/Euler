@@ -4,6 +4,9 @@ using namespace frc;
 
 void Robot::RobotInit() 
 {
+  cs::AxisCamera camera = CameraServer::GetInstance()->AddAxisCamera("10.36.37.16");  // Initialize Camera
+  // camera.SetResolution(160, 90);    // Only use these two lines if needed
+  // camera.SetFPS(15);
   try {
     m_xbox        = new frc::XboxController(XBOX);
     m_leftStick   = new frc::Joystick(LEFT_JOY);
@@ -65,6 +68,13 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+
+    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tv", 0.0));
+    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tshort", 0.0));
+    double limeAngle = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ts", 0.0) * 1.81 + 163;
+    SmartDashboard::PutNumber("Limelight Angle", limeAngle);
+
+
 
     if (m_drive) {
 		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING

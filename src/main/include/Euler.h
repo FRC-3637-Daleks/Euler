@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <string>
+#include "WPILibVersion.h"
+#include "cameraserver/CameraServer.h"
 #include <frc/AnalogGyro.h>
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
