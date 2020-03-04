@@ -4,14 +4,10 @@ using namespace frc;
 
 void Robot::RobotInit() 
 {
+  cs::AxisCamera camera = CameraServer::GetInstance()->AddAxisCamera("10.36.37.16");  // Initialize Camera
+  // camera.SetResolution(160, 90);    // Only use these two lines if needed
+  // camera.SetFPS(15);
   try {
-    frc::SmartDashboard::PutNumber("Start Auton", 2);
-    frc::SmartDashboard::PutNumber("End Auton", 2);
-    frc::SmartDashboard::PutNumber("Delay", 0);
-    frc::SmartDashboard::PutNumber("Delay Phase", 0);
-    frc::SmartDashboard::PutNumber("Auton Phase", 0);
-    frc::SmartDashboard::PutBoolean("Pickup Ball", false);
-    frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
     m_xbox        = new frc::XboxController(XBOX);
     m_leftStick   = new frc::Joystick(LEFT_JOY);
     m_rightStick  = new frc::Joystick(RIGHT_JOY);
@@ -29,8 +25,13 @@ void Robot::RobotInit()
     err_string += e.what();
     DriverStation::ReportError(err_string.c_str());
   }
-
-
+  frc::SmartDashboard::PutNumber("Start Auton", 2);
+  frc::SmartDashboard::PutNumber("End Auton", 2);
+  frc::SmartDashboard::PutNumber("Delay", 0);
+  frc::SmartDashboard::PutNumber("Delay Phase", 0);
+  frc::SmartDashboard::PutNumber("Auton Phase", 0);
+  frc::SmartDashboard::PutBoolean("Pickup Ball", false);
+  frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
 
   m_ahrs->ZeroYaw();
   m_ahrs->Reset();
@@ -71,6 +72,13 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+
+    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tv", 0.0));
+    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tshort", 0.0));
+    double limeAngle = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ts", 0.0) * 1.81 + 163;
+    SmartDashboard::PutNumber("Limelight Angle", limeAngle);
+
+
 
     if (m_drive) {
 		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
