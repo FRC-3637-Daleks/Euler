@@ -1,10 +1,8 @@
 #include "Euler.h"
 
-RaspberryPi::RaspberryPi(DalekDrive *drive) {
+RaspberryPi::RaspberryPi(DalekDrive *drive, AHRS * ahrs) {
     m_drive			= drive;
-	m_ahrs         	= new AHRS(SPI::Port::kMXP);
-	m_ahrs->Reset();
-	m_ahrs->ResetDisplacement();
+	m_ahrs         	= ahrs;
     
     p_temp = 0; i_temp = 0; d_temp = 0;
 }

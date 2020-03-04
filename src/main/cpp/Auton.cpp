@@ -1,12 +1,9 @@
 #include "Euler.h"
 
-Auton::Auton(DalekDrive *drive, RaspberryPi *pi, BallIntake *ballIntake)
+Auton::Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIntake)
 {
 	m_drive			= drive;
-	m_ahrs         	= new AHRS(SPI::Port::kMXP);
-	m_ahrs->ZeroYaw();
-	m_ahrs->Reset();
-	m_ahrs->ResetDisplacement();
+	m_ahrs			= ahrs;
 	m_pi            = pi; 
 	m_ballIntake    = ballIntake;
 
@@ -52,8 +49,6 @@ void Auton::AutonCase(int begin, int end)
 
 void Auton::AutonDrive()
 {
-	// if (auton_phase==frc::SmartDashboard::GetData("Delay Phase"))
-	// waitSeconds += (double)this->GetPeriod();
 	if (!m_ahrs->IsCalibrating()) {
 		switch (auton_phase) {
 			case 0: // turn to target
@@ -72,17 +67,16 @@ void Auton::AutonDrive()
 			}
 			break;
 			case 3: // drive to wall
-				if (driveToCoordinates(0, 0.762, 0)) {
+				if (driveToCoordinates(enter_target_x, 0.762, 0)) {
 					auton_phase++;
 				}
 				break;
 			case 4: //delivers balls
-				//Not in the code yet
 				m_ballIntake->Yeet();
 				auton_phase++;
 				break;
 			case 5: //give us a little space to turn around (can be lowered)
-				if (driveToCoordinates(0, -0.762, 0)) {
+				if (driveToCoordinates(0, 0.762, 0)) {
 					auton_phase++;
 				}
 				break;
@@ -106,8 +100,7 @@ void Auton::AutonDrive()
 			case 9: //collect balls if warrented
 				//I don't know if the followBall will work the way I put it
 				if (m_pi->FollowBall()) {
-					//Currently not in code
-					m_ballIntake->startIntake();
+					m_ballIntake->StartIntake();
 					if (m_ballIntake->GetBallCount() == 3)
 						auton_phase++;
 				}

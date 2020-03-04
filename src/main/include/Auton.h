@@ -4,7 +4,8 @@
 #include "Euler.h"
 
 // literally every single #define is a guess, so test one at a time
-#define START_DIST				1.524
+#define lineToWall				1.524
+#define startDistanceFromWall   0.3048
 #define pixelOffsetCoefficient	0.025
 #define angleOffsetCoefficient	0.01
 #define distanceCoefficient		0.3
@@ -22,7 +23,7 @@ using namespace frc;
 // all measurements are in meters
 class Auton {
 	public:
-	Auton(DalekDrive *drive, RaspberryPi *pi, BallIntake *ballIntake);
+	Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIntake);
 	
 	void AutonCase(int begin, int end); // this must be called before AutonDrive()
 	void AutonDrive();

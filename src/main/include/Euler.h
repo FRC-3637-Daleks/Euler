@@ -10,12 +10,14 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DriverStation.h>
 #include <frc/Joystick.h>
+#include <frc/GenericHID.h>
 #include <frc/XboxController.h>
 #include <frc/SpeedControllerGroup.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/drive/MecanumDrive.h>
 #include <frc/DigitalInput.h>
 #include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
 #include <frc/Compressor.h>
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
@@ -26,6 +28,8 @@
 #include <RaspberryPi.h>
 #include <BallIntake.h>
 #include <Auton.h>
+#include <Climber.h>
+#include <Spinner.h>
 
 #define PI	3.14159265358979323846
 
@@ -56,6 +60,17 @@ enum DIGITAL_IO {
 	CONVEYOR_STOP = 1
 };
 
+enum SOLENOID_IDS {
+	CLIMB_DEPLOY = 0,
+	RATCHET_LOCK = 1,
+	INTAKE_DEPLOY = 2,
+	SPINNER_DEPLOY = 3,
+	SPINNER_EXHAUST = 4,
+	CLIMB_EXHAUST = 5,
+	INTAKE_EXHAUST = 6,
+	NUM_SOLENOIDS
+};
+
 class Robot : public TimedRobot {
 	public:
 	void RobotInit() override;
@@ -78,10 +93,10 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
-	BallIntake *
-	m_ball_intake;
+	Climber *m_climber;
+	Spinner *m_spinner;
 
-	double waitSeconds;
+	double waitSeconds = 0.0;
 	int auton_start, auton_end;
-	bool pickupBall;
+	bool pickupBall = false;
 };
