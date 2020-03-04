@@ -12,8 +12,10 @@ bool RaspberryPi::FollowBall()
 	int offset = frc::SmartDashboard::GetNumber("X Offset", 100000), distance = frc::SmartDashboard::GetNumber("Distance", -1);
 	if (offset == 100000 || distance == -1) {
 		m_drive->TankDrive(0.0, 0.0, false);
+		SmartDashboard::PutBoolean("camera sees ball?", false);
 		return false;
 	}
+	SmartDashboard::PutBoolean("camera sees ball?", true);
     return driveAdjusted(offset, distance, pixelOffsetCoefficient);
 }
 

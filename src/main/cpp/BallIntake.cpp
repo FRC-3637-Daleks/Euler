@@ -37,6 +37,13 @@ BallIntake::~BallIntake()
     free(m_intake);
 }
 
+void BallIntake::Reinit()
+{
+	m_conveyor->Set(0);
+	m_intake->Set(0);
+    intake_solenoid->Set(frc::DoubleSolenoid::kReverse);
+}
+
 void
 BallIntake::StartIntake()
 {
@@ -67,7 +74,8 @@ BallIntake::Tick()
 	SmartDashboard::PutBoolean("Output Sensed", m_releaseSensor->Get());
 	SmartDashboard::PutNumber("ballCount", GetBallCount());
 	
-	if (m_xbox->GetBumperPressed(frc::GenericHID::kRightHand)) {
+
+	if (m_xbox->GetAButtonPressed()) {
     	if (intake_solenoid->Get() == frc::DoubleSolenoid::kForward){
       		intake_solenoid->Set(frc::DoubleSolenoid::kReverse);
     	} else {
@@ -75,11 +83,11 @@ BallIntake::Tick()
     	}
  	}
 
-	if (m_xbox->GetTriggerAxis(frc::GenericHID::kLeftHand) || eject) {
+	if (m_xbox->GetBumper(frc::GenericHID::kLeftHand) || eject) {
 		pickupPhase = 0;
-		if (seeBall && m_releaseSensor->Get() && ballCount > 0) {
-			ballCount--;
-		}
+		// if (seeBall && m_releaseSensor->Get() && ballCount > 0) {
+		// 	ballCount--;
+		// }
 		if (eject && ballCount == 0) {
 			m_conveyor->Set(0);
 			m_intake->Set(0);
@@ -137,6 +145,9 @@ BallIntake::Tick()
 				m_intake->Set(0);
 			}
     	}
+	}
+	if (seeBall && m_releaseSensor->Get() && ballCount > 0) {
+		ballCount--;
 	}
 	seeBall = !m_releaseSensor->Get();
 }
