@@ -7,6 +7,7 @@ class Spinner {
 	Spinner(frc::XboxController *xbox);
 	~Spinner();
     void Tick();
+	void reinit();
 
 	private:
 	WPI_TalonSRX *m_spinner;

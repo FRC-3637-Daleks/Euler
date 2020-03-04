@@ -109,6 +109,14 @@ DalekDrive::TankDrive(Joystick* leftStick, Joystick* rightStick, bool squaredInp
 		m_diffdrive->TankDrive(leftStick->GetY() * MAX_SPEED, rightStick->GetY() * MAX_SPEED, squaredInputs);
 		SmartDashboard::PutNumber("joystick left", leftStick->GetY());
 		SmartDashboard::PutNumber("right joystick", rightStick->GetY());
+		SmartDashboard::PutNumber("right encoder", m_rightEncoder[FRONT]->GetVelocity());
+		SmartDashboard::PutNumber("left encoder", m_leftEncoder[FRONT]->GetVelocity());
+		SmartDashboard::PutNumber("right output", m_rightMotor[FRONT]->GetAppliedOutput());
+		SmartDashboard::PutNumber("left output", m_leftMotor[FRONT]->GetAppliedOutput());
+		SmartDashboard::PutNumber("right current", m_rightMotor[FRONT]->GetOutputCurrent());
+		SmartDashboard::PutNumber("left current", m_leftMotor[FRONT]->GetOutputCurrent());
+		SmartDashboard::PutNumber("right voltage", m_rightMotor[FRONT]->GetBusVoltage());
+		SmartDashboard::PutNumber("left voltage", m_leftMotor[FRONT]->GetBusVoltage());
 	} else {
 		double l = leftStick->GetY(), r = rightStick->GetY();
 		if(squaredInputs) {

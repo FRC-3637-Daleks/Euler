@@ -50,11 +50,13 @@ void Robot::AutonomousInit()
   auton_end =   (int)frc::SmartDashboard::GetData("End Auton");
   waitSeconds = (int)frc::SmartDashboard::GetData("Delay");
 	m_auton->AutonCase((double)auton_start, (double)auton_end); // the parameters change based on what auton sequence we are going to use
+  m_climber->reinit();
+  m_spinner->reinit();
+  m_ballIntake->reinit();
 }
 
 void Robot::AutonomousPeriodic() 
 {
-	//waitSeconds += (double)this->GetPeriod();
 	if (waitSeconds <= (double)this->GetPeriod()) { // the number 0 change based on how long we want to wait in the auton sequence
 		m_auton->AutonDrive();
 	}
@@ -62,7 +64,9 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-
+   m_climber->reinit();
+   m_spinner->reinit();
+   m_ballIntake->reinit();
 }
 
 void Robot::TeleopPeriodic()
@@ -76,10 +80,10 @@ void Robot::TeleopPeriodic()
     }
 	}
 
-	m_ballIntake->Tick();
-          
+	m_ballIntake->Tick();  
   m_spinner->Tick();
   m_climber->Tick();
+
 
 }
 

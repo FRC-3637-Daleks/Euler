@@ -21,11 +21,16 @@ Spinner::~Spinner()
     free(m_spinner_solenoid);
 }
 
+void Spinner::reinit()
+{
+    m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
+}
+
 void
 Spinner::Tick()
 {
     frc::SmartDashboard::PutNumber("SpinnerEncoder", m_spinner->GetSensorCollection().GetQuadraturePosition());
-    if (m_xbox->GetAButtonPressed()) {
+    if (m_xbox->GetYButtonPressed()) {
         if (m_spinner_solenoid->Get() == frc::DoubleSolenoid::kForward){
             m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
         } else {
@@ -34,8 +39,8 @@ Spinner::Tick()
      }
 
     if (m_spinner_solenoid->Get() == frc::DoubleSolenoid::kForward) {
-        if (m_xbox->GetBButton()) {
-            m_spinner->Set(0.5);
+        if (m_xbox->GetXButton()) {
+            m_spinner->Set(1);
         } else {
             m_spinner->Set(0.0);
         }
