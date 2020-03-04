@@ -37,7 +37,7 @@ BallIntake::~BallIntake()
     free(m_intake);
 }
 
-void BallIntake::reinit()
+void BallIntake::Reinit()
 {
 	m_conveyor->Set(0);
 	m_intake->Set(0);

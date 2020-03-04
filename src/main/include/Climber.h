@@ -7,7 +7,7 @@ class Climber {
 	Climber(frc::XboxController *xbox);
 	~Climber();
     void Tick();
-	void reinit();
+	void Reinit();
 
 	private:
 	WPI_TalonSRX *m_trolley, *m_lift;

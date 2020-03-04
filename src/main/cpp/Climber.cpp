@@ -26,7 +26,7 @@ Climber::~Climber()
     free(m_climb_solenoid);
 }
 
-void Climber::reinit()
+void Climber::Reinit()
 {
     m_ratchet_solenoid->Set(false);  // Check this!!!
 }

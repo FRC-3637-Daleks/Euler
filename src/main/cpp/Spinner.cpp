@@ -21,7 +21,7 @@ Spinner::~Spinner()
     free(m_spinner_solenoid);
 }
 
-void Spinner::reinit()
+void Spinner::Reinit()
 {
     m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
 }
