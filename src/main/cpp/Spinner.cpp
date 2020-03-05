@@ -8,8 +8,17 @@ Spinner::Spinner(frc::XboxController *xbox)
 void
 Spinner:: init(frc::XboxController *xbox)
 {
+    const int kTimeoutMs = 30;
+    const bool kSensorPhase = false;
+    const bool kInvert = false;
+
     m_xbox = xbox;
 	m_spinner = new WPI_TalonSRX(SPINNER);
+    m_spinner->ConfigFactoryDefault();
+	m_spinner->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, kTimeoutMs);
+	m_spinner->SetSensorPhase(kSensorPhase);
+	m_spinner->SetInverted(kInvert);
+    m_spinner->SetSelectedSensorPosition(0, 0, kTimeoutMs);
    	m_spinner_solenoid = new frc::DoubleSolenoid(PCM, SPINNER_DEPLOY, SPINNER_EXHAUST);
     m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
 }
@@ -23,13 +32,19 @@ Spinner::~Spinner()
 
 void Spinner::Reinit()
 {
+     const int kTimeoutMs = 30;
+    m_spinner->SetSelectedSensorPosition(0, 0, kTimeoutMs);
     m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
 }
 
 void
 Spinner::Tick()
 {
-    frc::SmartDashboard::PutNumber("SpinnerEncoder", m_spinner->GetSensorCollection().GetQuadraturePosition());
+    float encoderCnt = m_spinner->GetSensorCollection().GetQuadraturePosition();
+
+    frc::SmartDashboard::PutNumber("SpinnerEncoder", encoderCnt);
+    frc::SmartDashboard::PutNumber("Approx Color Wheel rotations", encoderCnt/32768.0);
+
     if (m_xbox->GetYButtonPressed()) {
         if (m_spinner_solenoid->Get() == frc::DoubleSolenoid::kForward){
             m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
