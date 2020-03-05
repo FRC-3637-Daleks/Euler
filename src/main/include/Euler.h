@@ -29,6 +29,7 @@
 #include <DalekDrive.h>
 #include <RaspberryPi.h>
 #include <BallIntake.h>
+#include <Limelight.h>
 #include <Auton.h>
 #include <Climber.h>
 #include <Spinner.h>
@@ -99,6 +100,7 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+	Limelight *m_limelight;
 	Climber *m_climber;
 	Spinner *m_spinner;
 

@@ -19,6 +19,7 @@ void Robot::RobotInit()
     m_auton       = new Auton(m_drive, m_ahrs, m_pi, m_ballIntake);
     m_climber     = new Climber(m_xbox);
     m_spinner     = new Spinner(m_xbox);
+    m_limelight   = new Limelight(m_drive);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -79,14 +80,6 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-
-    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tv", 0.0));
-    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tshort", 0.0));
-    double limeAngle = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ts", 0.0) * 1.81 + 163;
-    SmartDashboard::PutNumber("Limelight Angle", limeAngle);
-
-
-
     if (m_drive) {
 		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
 		    m_pi->FollowBall();
