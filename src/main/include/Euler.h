@@ -98,7 +98,7 @@ class Robot : public TimedRobot {
 	Climber *m_climber;
 	Spinner *m_spinner;
 
-	double waitSeconds = 0.0;
+	bool timeChanged = false;
+	double waitSeconds = 0.0, timeOffset = 0.0;
 	int auton_start, auton_end;
-	bool pickupBall = false;
 };

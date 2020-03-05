@@ -28,6 +28,8 @@ class Auton {
 	void AutonCase(int begin, int end); // this must be called before AutonDrive()
 	void AutonDrive();
 
+	int auton_phase;
+
 	private:
 	DalekDrive *m_drive;
 	RaspberryPi *m_pi;
@@ -35,9 +37,8 @@ class Auton {
 	BallIntake *m_ballIntake;
 	// eventually will need delivery mechanism
 
-	int auton_phase;
 	double exit_target_x, exit_target_y, exit_target_ang, enter_target_x, enter_target_y, enter_target_ang;
-	bool pickupBalls;
+	bool pickupBallEnd, pickupBallStart;
 
 	bool driveToCoordinates(double x, double y, double angle);
 
