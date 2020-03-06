@@ -8,7 +8,8 @@ Auton::Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIn
 	m_ballIntake    = ballIntake;
 
 	auton_phase = 0;
-	pickupBalls = frc::SmartDashboard::GetData("Pickup Ball");
+	pickupBallStart = frc::SmartDashboard::GetData("Pickup Ball Start");
+	pickupBallEnd   = frc::SmartDashboard::GetData("Pickup Ball End");
 }
 
 void Auton::AutonCase(int begin, int end)
@@ -17,7 +18,7 @@ void Auton::AutonCase(int begin, int end)
 		case 1: //right sensor
 		enter_target_x = -2; //need sensor
 		break;
-		case 2: //staright on
+		case 2: //straight on
 		enter_target_x = 0;
 		break;
 		case 3: //left sensor
@@ -25,10 +26,10 @@ void Auton::AutonCase(int begin, int end)
 		break;
 	}
 
-	enter_target_y = START_DIST;
+	enter_target_y = lineToWall;
 	
-	switch (end) {//Might've screwed up calculations by having us move back a little
-		case 1: //Enemy trench
+	switch (end) {
+		case 1: //Our trench
 			exit_target_x = -2.009775;
 			exit_target_y = 3.048;
 			break;
@@ -36,7 +37,7 @@ void Auton::AutonCase(int begin, int end)
 			exit_target_x = 3.17931851816;
 			exit_target_y = 5.248275;
 			break;
-		case 3: //Our trench
+		case 3: //Enemy trench
 			exit_target_x = 3.851275;
 			exit_target_y = 5.248275;
 			break;
@@ -49,60 +50,69 @@ void Auton::AutonCase(int begin, int end)
 
 void Auton::AutonDrive()
 {
-	// if (auton_phase==frc::SmartDashboard::GetData("Delay Phase"))
-	// waitSeconds += (double)this->GetPeriod();
 	if (!m_ahrs->IsCalibrating()) {
 		switch (auton_phase) {
-			case 0: // turn to target
+			case 0:
+				if(!pickupBallStart) {
+					auton_phase = 2;
+				}	else if(m_pi->FollowBall()) {
+						m_ballIntake->StartIntake();
+						if (m_ballIntake->GetBallCount() == 5)
+							auton_phase++;
+					}
+			break;
+			case 1:
+			//this is when the case will wait
+			break;
+			case 2: // turn to target
 			if (m_pi->turnToFace(enter_target_ang)) {
 				auton_phase++;
 			}
 			break;
-			case 1: // drive to target
+			case 3: // drive to target
 			if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
 				auton_phase++;;
 			}
 			break;
-			case 2: // turn straight
+			case 4: // turn straight
 			if (m_pi->turnToFace(0)) {
 				auton_phase++;
 			}
 			break;
-			case 3: // drive to wall
+			case 5: // drive to wall
+				if (driveToCoordinates(enter_target_x, 0.762, 0)) {
+					auton_phase++;
+				}
+				break;
+			case 6: //delivers balls
+				m_ballIntake->Yeet();
+				auton_phase++;
+				break;
+			case 7: //give us a little space to turn around (can be lowered)
 				if (driveToCoordinates(0, 0.762, 0)) {
 					auton_phase++;
 				}
 				break;
-			case 4: //delivers balls
-				//Dump balls here
-				auton_phase++;
-				break;
-			case 5: //give us a little space to turn around (can be lowered)
-				if (driveToCoordinates(0, -0.762, 0)) {
-					auton_phase++;
-				}
-				break;
-			case 6: //turn around
+			case 8: //turn around
 				if (m_pi->turnToFace(PI)) {
 					auton_phase++;
 				}
 				break;		
-			case 7: //face exit
+			case 9: //face exit
 				if (m_pi->turnToFace(exit_target_ang)) {
 					auton_phase++;
 				}
 				break;
-			case 8: //drive towards exit
+			case 10: //drive towards exit
 				if (driveToCoordinates(exit_target_x, exit_target_y, exit_target_ang)) {
 					auton_phase++;
-					if (!pickupBalls)
+					if (!pickupBallEnd)
 						auton_phase++;
 				}
 				break;
-			case 9: //collect balls if warrented
+			case 11: //collect balls if warrented
 				//I don't know if the followBall will work the way I put it
 				if (m_pi->FollowBall()) {
-					//Currently not in code
 					m_ballIntake->StartIntake();
 					if (m_ballIntake->GetBallCount() == 3)
 						auton_phase++;

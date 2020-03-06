@@ -19,6 +19,7 @@ void Robot::RobotInit()
     m_auton       = new Auton(m_drive, m_ahrs, m_pi, m_ballIntake);
     m_climber     = new Climber(m_xbox);
     m_spinner     = new Spinner(m_xbox);
+    m_limelight   = new Limelight(m_drive);
   }
   catch (std::exception& e) {
     std::string err_string = "Error instantiating components:  ";
@@ -30,8 +31,9 @@ void Robot::RobotInit()
   frc::SmartDashboard::PutNumber("Delay", 0);
   frc::SmartDashboard::PutNumber("Delay Phase", 0);
   frc::SmartDashboard::PutNumber("Auton Phase", 0);
-  frc::SmartDashboard::PutBoolean("Pickup Ball", false);
-  frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
+  frc::SmartDashboard::PutBoolean("Pickup Ball End", false);
+  frc::SmartDashboard::PutBoolean("Pickup Ball Start", false);
+  //frc::SmartDashboard::PutNumber("Starting # of Balls", 3);
 
   m_ahrs->ZeroYaw();
   m_ahrs->Reset();
@@ -58,9 +60,15 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic() 
 {
-	if (waitSeconds <= (double)this->GetPeriod()) { // the number 0 change based on how long we want to wait in the auton sequence
-		m_auton->AutonDrive();
-	}
+  if (m_auton->auton_phase == 1) {
+    if (!timeChanged) {
+      timeOffset = (double)this->GetPeriod();
+      timeChanged = true;
+    }
+	  if (waitSeconds <= (double)(this->GetPeriod()) - timeOffset) // the number 0 change based on how long we want to wait in the auton sequence
+      m_auton->auton_phase++;
+  }
+  m_auton->AutonDrive();
 }
 
 void Robot::TeleopInit()
@@ -72,14 +80,6 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-
-    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tv", 0.0));
-    SmartDashboard::PutNumber("Limelight", nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tshort", 0.0));
-    double limeAngle = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ts", 0.0) * 1.81 + 163;
-    SmartDashboard::PutNumber("Limelight Angle", limeAngle);
-
-
-
     if (m_drive) {
 		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
 		    m_pi->FollowBall();

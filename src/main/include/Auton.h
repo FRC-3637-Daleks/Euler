@@ -4,7 +4,8 @@
 #include "Euler.h"
 
 // literally every single #define is a guess, so test one at a time
-#define START_DIST				1.524
+#define lineToWall				1.524
+#define startDistanceFromWall   0.3048
 #define pixelOffsetCoefficient	0.025
 #define angleOffsetCoefficient	0.01
 #define distanceCoefficient		0.3
@@ -27,6 +28,8 @@ class Auton {
 	void AutonCase(int begin, int end); // this must be called before AutonDrive()
 	void AutonDrive();
 
+	int auton_phase;
+
 	private:
 	DalekDrive *m_drive;
 	RaspberryPi *m_pi;
@@ -34,9 +37,8 @@ class Auton {
 	BallIntake *m_ballIntake;
 	// eventually will need delivery mechanism
 
-	int auton_phase;
 	double exit_target_x, exit_target_y, exit_target_ang, enter_target_x, enter_target_y, enter_target_ang;
-	bool pickupBalls;
+	bool pickupBallEnd, pickupBallStart;
 
 	bool driveToCoordinates(double x, double y, double angle);
 

@@ -29,11 +29,16 @@
 #include <DalekDrive.h>
 #include <RaspberryPi.h>
 #include <BallIntake.h>
+#include <Limelight.h>
 #include <Auton.h>
 #include <Climber.h>
 #include <Spinner.h>
 
 #define PI	3.14159265358979323846
+#define COLOR_WHEEL_RADIUS			16.0
+#define COLOR_WHEEL_CIRCUMFERENCE	((COLOR_WHEEL_RADIUS)*2.0*(PI))
+#define SPINNER_WHEEL_RADIUS		2.0
+#define SPINNER_WHEEL_CIRCUMFERENCE	((SPINNER_WHEEL_RADIUS)*2.0*(PI))
 
 // CAN BUS devices
 enum CAN_IDS {
@@ -95,10 +100,11 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+	Limelight *m_limelight;
 	Climber *m_climber;
 	Spinner *m_spinner;
 
-	double waitSeconds = 0.0;
+	bool timeChanged = false;
+	double waitSeconds = 0.0, timeOffset = 0.0;
 	int auton_start, auton_end;
-	bool pickupBall = false;
 };
