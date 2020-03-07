@@ -10,6 +10,8 @@ Auton::Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIn
 	auton_phase = 0;
 	pickupBallStart = frc::SmartDashboard::GetData("Pickup Ball Start");
 	pickupBallEnd   = frc::SmartDashboard::GetData("Pickup Ball End");
+
+	p_temp = 0; i_temp = 0; d_temp = 0;
 }
 
 void Auton::AutonCase(int begin, int end)
@@ -65,7 +67,7 @@ void Auton::AutonDrive()
 			//this is when the case will wait
 			break;
 			case 2: // turn to target
-			if (m_pi->turnToFace(enter_target_ang)) {
+			if (turnToFace(enter_target_ang)) {
 				auton_phase++;
 			}
 			break;
@@ -75,7 +77,7 @@ void Auton::AutonDrive()
 			}
 			break;
 			case 4: // turn straight
-			if (m_pi->turnToFace(0)) {
+			if (turnToFace(0)) {
 				auton_phase++;
 			}
 			break;
@@ -94,12 +96,12 @@ void Auton::AutonDrive()
 				}
 				break;
 			case 8: //turn around
-				if (m_pi->turnToFace(PI)) {
+				if (turnToFace(PI)) {
 					auton_phase++;
 				}
 				break;		
 			case 9: //face exit
-				if (m_pi->turnToFace(exit_target_ang)) {
+				if (turnToFace(exit_target_ang)) {
 					auton_phase++;
 				}
 				break;
@@ -145,7 +147,35 @@ void Auton::AutonDrive()
 
 bool Auton::driveToCoordinates(double x, double y, double angle)
 {
-	SmartDashboard::PutNumber("angle offset", m_pi->angleOffset(angle) * 180 / PI);
+	SmartDashboard::PutNumber("angle offset", angleOffset(angle) * 180 / PI);
 	SmartDashboard::PutNumber("dist offset", sqrt(pow(x - m_ahrs->GetDisplacementX(), 2) + pow(y - m_ahrs->GetDisplacementY(), 2))); // this is not correct currently
-	return m_pi->driveAdjusted(m_pi->angleOffset(angle), sqrt(pow(x - m_ahrs->GetDisplacementX(), 2) + pow(y - m_ahrs->GetDisplacementY(), 2)), angleOffsetCoefficient);
+	return m_pi->driveAdjusted(angleOffset(angle), sqrt(pow(x - m_ahrs->GetDisplacementX(), 2) + pow(y - m_ahrs->GetDisplacementY(), 2)), angleOffsetCoefficient);
 }
+
+bool Auton::turnToFace(double angle)
+{
+	double prev_error = p_temp;
+	p_temp = angleOffset(angle);
+	if (abs(p_temp) < turningErrorThreshold) {
+		return true;
+	}
+	i_temp += p_temp;
+	d_temp = p_temp - prev_error;
+	double pid_result = pTurn * p_temp + iTurn * i_temp + dTurn * d_temp;
+	if (pid_result > 0) {
+		m_drive->TankDrive(min(pid_result, maxTurnSpeed), -min(pid_result, maxTurnSpeed), false);
+	} else {
+		m_drive->TankDrive(max(pid_result, -maxTurnSpeed), -max(pid_result, -maxTurnSpeed), false);
+	}
+	return false;
+}
+
+double Auton::angleOffset(double angle)
+{
+	double offset = fmod(angle - (m_ahrs->GetAngle()) * PI / 180, 2 * PI);
+	//Josh's function = fmod(angle - (m_ahrs->GetAngle()) * PI / 180, 360)
+	if (offset > PI) {
+		offset -= PI * 2;
+	}
+	return offset;
+} 

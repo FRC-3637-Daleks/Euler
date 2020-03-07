@@ -13,7 +13,7 @@ void Robot::RobotInit()
     m_rightStick  = new frc::Joystick(RIGHT_JOY);
     m_drive       = new DalekDrive(LEFT_FRONT_DRIVE, LEFT_REAR_DRIVE, RIGHT_FRONT_DRIVE, RIGHT_REAR_DRIVE, DalekDrive::driveType::kDifferential);
     m_ahrs        = new AHRS(SPI::Port::kMXP);
-    m_pi          = new RaspberryPi(m_drive, m_ahrs);
+    m_pi          = new RaspberryPi(m_drive);
     m_compressor  = new frc::Compressor(PCM);
 	  m_ballIntake  = new BallIntake(m_xbox);
     m_auton       = new Auton(m_drive, m_ahrs, m_pi, m_ballIntake);
@@ -83,10 +83,13 @@ void Robot::TeleopPeriodic()
     if (m_drive) {
 		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
 		    m_pi->FollowBall();
-    } else {
+      } else if (m_xbox->GetStartButton()) {
+        m_drive->TankDrive(-0.3, -0.3, false);
+      } else {
         m_drive->TankDrive(m_leftStick, m_rightStick, true);
+      }
     }
-	}
+
 
 	m_ballIntake->Tick();  
   m_spinner->Tick();
