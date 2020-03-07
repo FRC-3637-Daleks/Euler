@@ -14,11 +14,23 @@ void
 BallIntake:: init(frc::XboxController *xbox, int ballCount)
 {
 	m_conveyor = new WPI_TalonSRX(CONVEYOR_BELT);
+	if(m_conveyor == NULL)
+		std::bad_alloc();
+	m_conveyor->ConfigFactoryDefault();
     m_pickupSensor = new frc::DigitalInput(CONVEYOR_INPUT);
+	if(m_pickupSensor == NULL)
+		std::bad_alloc();
     m_releaseSensor = new frc::DigitalInput(CONVEYOR_STOP);
+	if(m_releaseSensor == NULL)
+		std::bad_alloc();
     m_intake = new WPI_TalonSRX(ROLLER_BAR);
+	if(m_intake == NULL)
+		std::bad_alloc();
+	m_intake->ConfigFactoryDefault();
     //ballCount = (int)frc::SmartDashboard::GetData("Starting # of Balls");
 	intake_solenoid = new frc::DoubleSolenoid(PCM, INTAKE_DEPLOY,INTAKE_EXHAUST);
+	if(intake_solenoid == NULL)
+		std::bad_alloc();
     intake_solenoid->Set(frc::DoubleSolenoid::kReverse);
     m_xbox = xbox;
     triggerHeld = false;
@@ -74,7 +86,6 @@ BallIntake::Tick()
 	SmartDashboard::PutBoolean("Output Sensed", m_releaseSensor->Get());
 	SmartDashboard::PutNumber("ballCount", GetBallCount());
 	
-
 	if (m_xbox->GetAButtonPressed()) {
     	if (intake_solenoid->Get() == frc::DoubleSolenoid::kForward){
       		intake_solenoid->Set(frc::DoubleSolenoid::kReverse);

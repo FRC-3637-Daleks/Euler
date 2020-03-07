@@ -60,25 +60,25 @@ void Auton::AutonDrive()
 						if (m_ballIntake->GetBallCount() == 5)
 							auton_phase++;
 					}
-			break;
+				break;
 			case 1:
 			//this is when the case will wait
-			break;
+				break;
 			case 2: // turn to target
-			if (m_pi->turnToFace(enter_target_ang)) {
-				auton_phase++;
-			}
-			break;
+				if (m_pi->turnToFace(enter_target_ang)) {
+					auton_phase++;
+				}
+				break;
 			case 3: // drive to target
-			if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
-				auton_phase++;;
-			}
-			break;
+				if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
+					auton_phase++;;
+				}
+				break;
 			case 4: // turn straight
-			if (m_pi->turnToFace(0)) {
-				auton_phase++;
-			}
-			break;
+				if (m_pi->turnToFace(0)) {
+					auton_phase++;
+				}
+				break;
 			case 5: // drive to wall
 				if (driveToCoordinates(enter_target_x, 0.762, 0)) {
 					auton_phase++;

@@ -14,12 +14,16 @@ Spinner:: init(frc::XboxController *xbox)
 
     m_xbox = xbox;
 	m_spinner = new WPI_TalonSRX(SPINNER);
+    if(m_spinner == NULL)
+        std::bad_alloc();
     m_spinner->ConfigFactoryDefault();
 	m_spinner->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, kTimeoutMs);
 	m_spinner->SetSensorPhase(kSensorPhase);
 	m_spinner->SetInverted(kInvert);
     m_spinner->SetSelectedSensorPosition(0, 0, kTimeoutMs);
    	m_spinner_solenoid = new frc::DoubleSolenoid(PCM, SPINNER_DEPLOY, SPINNER_EXHAUST);
+    if(m_spinner_solenoid == NULL)
+        std::bad_alloc();
     m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
 }
 
@@ -32,7 +36,7 @@ Spinner::~Spinner()
 
 void Spinner::Reinit()
 {
-     const int kTimeoutMs = 30;
+    const int kTimeoutMs = 30;
     m_spinner->SetSelectedSensorPosition(0, 0, kTimeoutMs);
     m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
 }
