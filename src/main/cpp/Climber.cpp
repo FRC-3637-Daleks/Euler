@@ -14,7 +14,6 @@ Climber:: init(frc::XboxController *xbox)
         std::bad_alloc();
     m_trolley->ConfigFactoryDefault();
     m_lift = new WPI_TalonSRX(LIFT);
-<<<<<<< HEAD
     if(m_lift == NULL)
         std::bad_alloc();
     m_lift->ConfigFactoryDefault();
@@ -22,10 +21,6 @@ Climber:: init(frc::XboxController *xbox)
     if(m_ratchet_solenoid == NULL)
         std::bad_alloc();
     m_ratchet_solenoid->Set(false);
-=======
-	m_ratchet_solenoid= new frc::Solenoid(PCM, RATCHET_LOCK);
-    m_ratchet_solenoid->Set(true);
->>>>>>> origin/master
 	m_climb_solenoid = new frc::DoubleSolenoid(PCM, CLIMB_DEPLOY, CLIMB_EXHAUST);
     if(m_climb_solenoid == NULL)
         std::bad_alloc();

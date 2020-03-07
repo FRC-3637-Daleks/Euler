@@ -67,34 +67,20 @@ void Auton::AutonDrive()
 			//this is when the case will wait
 				break;
 			case 2: // turn to target
-<<<<<<< HEAD
-				if (m_pi->turnToFace(enter_target_ang)) {
+				if (turnToFace(enter_target_ang)) {
 					auton_phase++;
 				}
 				break;
-=======
-			if (turnToFace(enter_target_ang)) {
-				auton_phase++;
-			}
-			break;
->>>>>>> origin/master
 			case 3: // drive to target
 				if (driveToCoordinates(enter_target_x, enter_target_y, enter_target_ang)) {
 					auton_phase++;;
 				}
 				break;
 			case 4: // turn straight
-<<<<<<< HEAD
-				if (m_pi->turnToFace(0)) {
+				if (turnToFace(0)) {
 					auton_phase++;
 				}
 				break;
-=======
-			if (turnToFace(0)) {
-				auton_phase++;
-			}
-			break;
->>>>>>> origin/master
 			case 5: // drive to wall
 				if (driveToCoordinates(enter_target_x, 0.762, 0)) {
 					auton_phase++;
