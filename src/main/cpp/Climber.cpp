@@ -14,6 +14,7 @@ Climber:: init(frc::XboxController *xbox)
         std::bad_alloc();
     m_trolley->ConfigFactoryDefault();
     m_lift = new WPI_TalonSRX(LIFT);
+<<<<<<< HEAD
     if(m_lift == NULL)
         std::bad_alloc();
     m_lift->ConfigFactoryDefault();
@@ -21,6 +22,10 @@ Climber:: init(frc::XboxController *xbox)
     if(m_ratchet_solenoid == NULL)
         std::bad_alloc();
     m_ratchet_solenoid->Set(false);
+=======
+	m_ratchet_solenoid= new frc::Solenoid(PCM, RATCHET_LOCK);
+    m_ratchet_solenoid->Set(true);
+>>>>>>> origin/master
 	m_climb_solenoid = new frc::DoubleSolenoid(PCM, CLIMB_DEPLOY, CLIMB_EXHAUST);
     if(m_climb_solenoid == NULL)
         std::bad_alloc();
@@ -37,12 +42,19 @@ Climber::~Climber()
 
 void Climber::Reinit()
 {
-    m_ratchet_solenoid->Set(false);  // Check this!!!
+    m_climb_solenoid->Set(frc::DoubleSolenoid::kReverse);
+    m_ratchet_solenoid->Set(true); 
+}
+
+void Climber::DisabledInit()
+{
+    m_ratchet_solenoid->Set(false); 
 }
 
 void
 Climber::Tick()
 {
+    frc::SmartDashboard::PutBoolean("ratchet solenoid:", m_ratchet_solenoid->Get());
     if (m_xbox->GetBackButtonPressed()) {
         if (m_climb_solenoid->Get() == frc::DoubleSolenoid::kReverse) {
             m_climb_solenoid->Set(frc::DoubleSolenoid::kForward);
@@ -57,7 +69,7 @@ Climber::Tick()
 
     if (m_climb_solenoid->Get() == frc::DoubleSolenoid::kForward) {
         double motorSpeed = m_xbox->GetY(frc::GenericHID::kLeftHand) * -0.5;
-        m_ratchet_solenoid->Set(motorSpeed > 0);
+        m_ratchet_solenoid->Set(motorSpeed > 0); 
         m_lift->Set(motorSpeed);
     } else {
         m_lift->Set(0.0);

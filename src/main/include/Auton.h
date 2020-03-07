@@ -35,11 +35,14 @@ class Auton {
 	RaspberryPi *m_pi;
 	AHRS *m_ahrs;
 	BallIntake *m_ballIntake;
+
+double p_temp, i_temp, d_temp, target_x, target_y, target_ang;
 	// eventually will need delivery mechanism
 
 	double exit_target_x, exit_target_y, exit_target_ang, enter_target_x, enter_target_y, enter_target_ang;
 	bool pickupBallEnd, pickupBallStart;
 
 	bool driveToCoordinates(double x, double y, double angle);
-
+	bool turnToFace(double angle);
+	double angleOffset(double angle);
 };
