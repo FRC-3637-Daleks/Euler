@@ -108,6 +108,11 @@ void Robot::TestPeriodic()
 
 }
 
+void Robot::DisabledInit()
+{
+  m_climber->DisabledInit();
+}
+
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return StartRobot<Robot>(); }

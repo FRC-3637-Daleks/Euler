@@ -29,7 +29,12 @@ Climber::~Climber()
 void Climber::Reinit()
 {
     m_climb_solenoid->Set(frc::DoubleSolenoid::kReverse);
-    m_ratchet_solenoid->Set(true);  // Check this!!!
+    m_ratchet_solenoid->Set(true); 
+}
+
+void Climber::DisabledInit()
+{
+    m_ratchet_solenoid->Set(false); 
 }
 
 void

@@ -8,6 +8,7 @@ class Climber {
 	~Climber();
     void Tick();
 	void Reinit();
+	void DisabledInit();
 
 	private:
 	WPI_TalonSRX *m_trolley, *m_lift;

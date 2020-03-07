@@ -88,7 +88,8 @@ class Robot : public TimedRobot {
 	void TeleopPeriodic() override;
 	void TestInit() override;
 	void TestPeriodic() override;
-	
+	void DisabledInit() override;
+
 	private:
 	frc::XboxController *m_xbox;
 	frc::Joystick *m_leftStick;
