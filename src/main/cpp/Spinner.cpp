@@ -1,18 +1,19 @@
 #include "Euler.h"
 
-Spinner::Spinner(frc::XboxController *xbox)
+Spinner::Spinner(frc::XboxController *xbox, frc::DoubleSolenoid *climb_solenoid)
 {
-    init(xbox);
+    init(xbox, climb_solenoid);
 }
 
 void
-Spinner:: init(frc::XboxController *xbox)
+Spinner:: init(frc::XboxController *xbox, DoubleSolenoid *climb_solenoid)
 {
     const int kTimeoutMs = 30;
     const bool kSensorPhase = false;
     const bool kInvert = false;
 
     m_xbox = xbox;
+    m_climb_solenoid = climb_solenoid;
 	m_spinner = new WPI_TalonSRX(SPINNER);
     if(m_spinner == NULL)
         std::bad_alloc();
@@ -51,8 +52,10 @@ Spinner::Tick()
 
     if (m_xbox->GetYButtonPressed()) {
         if (m_spinner_solenoid->Get() == frc::DoubleSolenoid::kForward){
+            m_climb_solenoid->Set(frc::DoubleSolenoid::kOff);
             m_spinner_solenoid->Set(frc::DoubleSolenoid::kReverse);
         } else {
+            m_climb_solenoid->Set(frc::DoubleSolenoid::kReverse);
             m_spinner_solenoid->Set(frc::DoubleSolenoid::kForward);
         }
      }

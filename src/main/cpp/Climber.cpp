@@ -1,12 +1,12 @@
 #include "Euler.h"
 
-Climber::Climber(frc::XboxController *xbox)
+Climber::Climber(frc::XboxController *xbox, frc::DoubleSolenoid *climb_solenoid)
 {
-    init(xbox);
+    init(xbox, climb_solenoid);
 }
 
 void
-Climber:: init(frc::XboxController *xbox)
+Climber:: init(frc::XboxController *xbox, DoubleSolenoid *climb_solenoid)
 {
     m_xbox = xbox;
 	m_trolley = new WPI_TalonSRX(TROLLEY);
@@ -21,7 +21,7 @@ Climber:: init(frc::XboxController *xbox)
     if(m_ratchet_solenoid == NULL)
         std::bad_alloc();
     m_ratchet_solenoid->Set(false);
-	m_climb_solenoid = new frc::DoubleSolenoid(PCM, CLIMB_DEPLOY, CLIMB_EXHAUST);
+	m_climb_solenoid = climb_solenoid;
     if(m_climb_solenoid == NULL)
         std::bad_alloc();
     m_climb_solenoid->Set(frc::DoubleSolenoid::kReverse);

@@ -101,6 +101,7 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+	frc::DoubleSolenoid *m_climb_solenoid;
 	Limelight *m_limelight;
 	Climber *m_climber;
 	Spinner *m_spinner;

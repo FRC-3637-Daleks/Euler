@@ -4,7 +4,7 @@ using namespace frc;
 
 class Climber {
 	public:
-	Climber(frc::XboxController *xbox);
+	Climber(frc::XboxController *xbox, frc::DoubleSolenoid *climb_solenoid);
 	~Climber();
     void Tick();
 	void Reinit();
@@ -16,5 +16,5 @@ class Climber {
 	frc::Solenoid *m_ratchet_solenoid;
 	frc::DoubleSolenoid *m_climb_solenoid;
 
-	void init(frc::XboxController *xbox);
+	void init(frc::XboxController *xbox, frc::DoubleSolenoid *climb_solenoid);
 };
