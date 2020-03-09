@@ -5,6 +5,8 @@
 
 // literally every single #define is a guess, so test one at a time
 #define START_DIST				2.286 // dist from line to tip of triangle
+#define lineToWall				1.524
+#define startDistanceFromWall   0.3048
 #define pixelOffsetCoefficient	0.025
 #define angleOffsetCoefficient	0.01
 #define distanceCoefficient		0.3
@@ -32,12 +34,15 @@ class Auton {
 	RaspberryPi *m_pi;
 	AHRS *m_ahrs;
 	BallIntake *m_ballIntake;
+
+	double p_temp, i_temp, d_temp, target_x, target_y, target_ang;
 	// eventually will need delivery mechanism
 
 	int auton_phase;
 	double exit_target_x, exit_target_y, exit_target_ang, exit_target_dist, enter_target_x, enter_target_y, enter_target_ang, enter_target_dist, travelled_dist;
-	bool pickupBalls;
+	bool pickupBallEnd, pickupBallStart;
 
 	bool driveToCoordinates(double x, double y, double angle, double period);
-
+	bool turnToFace(double angle);
+	double angleOffset(double angle);
 };

@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <string>
+#include "WPILibVersion.h"
+#include "cameraserver/CameraServer.h"
 #include <frc/AnalogGyro.h>
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
@@ -27,11 +29,22 @@
 #include <DalekDrive.h>
 #include <RaspberryPi.h>
 #include <BallIntake.h>
+#include <Limelight.h>
 #include <Auton.h>
 #include <Climber.h>
 #include <Spinner.h>
 
 #define PI	3.14159265358979323846
+
+// Mostly for documentation of the ip addresses of the 
+// devices on the robot
+#define ROBORIO             "10.36.37.2"
+#define ACCESS_POINT        "10.36.37.1"
+#define FORWARD_CAMERA		"10.36.37.16"
+#define REAR_CAMERA			"10.36.37.??"
+#define RASPBERRY_PI_ADDR	"10.36.37.??"
+#define LIMELIGHT_ADDR		"10.36.37.??"
+#define LEVEL_SENSOR_ADDR   "10.36.37.??"
 
 // CAN BUS devices
 enum CAN_IDS {
@@ -81,7 +94,8 @@ class Robot : public TimedRobot {
 	void TeleopPeriodic() override;
 	void TestInit() override;
 	void TestPeriodic() override;
-	
+	void DisabledInit() override;
+
 	private:
 	frc::XboxController *m_xbox;
 	frc::Joystick *m_leftStick;
@@ -93,10 +107,12 @@ class Robot : public TimedRobot {
 	BallIntake *m_ballIntake;
 	Auton *m_auton;
 	AHRS *m_ahrs;
+	frc::DoubleSolenoid *m_climb_solenoid;
+	Limelight *m_limelight;
 	Climber *m_climber;
 	Spinner *m_spinner;
 
-	double waitSeconds = 0.0;
+	bool timeChanged = false;
+	double waitSeconds = 0.0, timeOffset = 0.0;
 	int auton_start, auton_end;
-	bool pickupBall = false;
 };

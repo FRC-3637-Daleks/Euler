@@ -44,6 +44,7 @@ class DalekDrive {
 	bool DriveOk();
 
 	void DriveBaseSquare(int leftSensor, int RightSensor);
+	double GetVelocity();
 
 	private:
 	void InitDalekDrive();
