@@ -4,7 +4,7 @@
 #include "Euler.h"
 
 // literally every single #define is a guess, so test one at a time
-#define START_DIST				1.524
+#define START_DIST				2.286 // dist from line to tip of triangle
 #define pixelOffsetCoefficient	0.025
 #define angleOffsetCoefficient	0.01
 #define distanceCoefficient		0.3
@@ -25,7 +25,7 @@ class Auton {
 	Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIntake);
 	
 	void AutonCase(int begin, int end); // this must be called before AutonDrive()
-	void AutonDrive();
+	void AutonDrive(double period);
 
 	private:
 	DalekDrive *m_drive;
@@ -35,9 +35,9 @@ class Auton {
 	// eventually will need delivery mechanism
 
 	int auton_phase;
-	double exit_target_x, exit_target_y, exit_target_ang, enter_target_x, enter_target_y, enter_target_ang;
+	double exit_target_x, exit_target_y, exit_target_ang, exit_target_dist, enter_target_x, enter_target_y, enter_target_ang, enter_target_dist, travelled_dist;
 	bool pickupBalls;
 
-	bool driveToCoordinates(double x, double y, double angle);
+	bool driveToCoordinates(double x, double y, double angle, double period);
 
 };

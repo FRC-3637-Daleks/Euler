@@ -230,6 +230,13 @@ DalekDrive::Cartesian(double ySpeed, double xSpeed, double zRotation, double gyr
 		m_mecanum->DriveCartesian(ySpeed * MAX_SPEED, xSpeed * MAX_SPEED, zRotation, gyroAngle);
 	}
 }
+
+double
+DalekDrive::GetVelocity()
+{
+	double wheelRad = 0.612775;
+	return wheelRad * (m_leftEncoder[FRONT]->GetVelocity() + m_rightEncoder[FRONT]->GetVelocity()) / 120;
+}
 	
 void
 DalekDrive::SetInvertedMotor(int side, bool isInverted)
