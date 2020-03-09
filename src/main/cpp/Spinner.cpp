@@ -48,7 +48,7 @@ Spinner::Tick()
     float encoderCnt = m_spinner->GetSensorCollection().GetQuadraturePosition();
 
     frc::SmartDashboard::PutNumber("SpinnerEncoder", encoderCnt);
-    frc::SmartDashboard::PutNumber("Approx Color Wheel rotations", encoderCnt/32768.0);
+    frc::SmartDashboard::PutNumber("Approx Color Wheel rotations", encoderCnt/NUM_TICKS_PER_COLOR_WHEEL_REV);
 
     if (m_xbox->GetYButtonPressed()) {
         if (m_spinner_solenoid->Get() == frc::DoubleSolenoid::kForward){

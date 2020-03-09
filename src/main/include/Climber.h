@@ -9,7 +9,9 @@ class Climber {
     void Tick();
 	void Reinit();
 	void DisabledInit();
-
+	void DisengageRatchet();
+	void EngageRatchet();
+	
 	private:
 	WPI_TalonSRX *m_trolley, *m_lift;
 	XboxController *m_xbox;

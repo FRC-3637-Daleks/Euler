@@ -35,13 +35,15 @@ Climber::~Climber()
     free(m_climb_solenoid);
 }
 
-void Climber::Reinit()
+void
+Climber::Reinit()
 {
     m_climb_solenoid->Set(frc::DoubleSolenoid::kReverse);
     m_ratchet_solenoid->Set(true); 
 }
 
-void Climber::DisabledInit()
+void 
+Climber::DisabledInit()
 {
     m_ratchet_solenoid->Set(false); 
 }
@@ -75,4 +77,16 @@ Climber::Tick()
     } else {
         m_trolley->Set(0.0);
     }
+}
+
+void
+Climber::DisengageRatchet()
+{
+    m_ratchet_solenoid->Set(true);
+}
+
+void
+Climber::EngageRatchet()
+{
+    m_ratchet_solenoid->Set(true);
 }

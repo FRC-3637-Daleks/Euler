@@ -35,10 +35,16 @@
 #include <Spinner.h>
 
 #define PI	3.14159265358979323846
-#define COLOR_WHEEL_RADIUS			16.0
-#define COLOR_WHEEL_CIRCUMFERENCE	((COLOR_WHEEL_RADIUS)*2.0*(PI))
-#define SPINNER_WHEEL_RADIUS		2.0
-#define SPINNER_WHEEL_CIRCUMFERENCE	((SPINNER_WHEEL_RADIUS)*2.0*(PI))
+
+// Mostly for documentation of the ip addresses of the 
+// devices on the robot
+#define ROBORIO             "10.36.37.2"
+#define ACCESS_POINT        "10.36.37.1"
+#define FORWARD_CAMERA		"10.36.37.16"
+#define REAR_CAMERA			"10.36.37.??"
+#define RASPBERRY_PI_ADDR	"10.36.37.??"
+#define LIMELIGHT_ADDR		"10.36.37.??"
+#define LEVEL_SENSOR_ADDR   "10.36.37.??"
 
 // CAN BUS devices
 enum CAN_IDS {
