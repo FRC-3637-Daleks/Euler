@@ -123,6 +123,10 @@ DalekDrive::TankDrive(Joystick* leftStick, Joystick* rightStick, bool squaredInp
 			l = squareInput(l);
 			r = squareInput(r);
 		}
+		if (l * r < 0) {
+			l *= .5;
+			r *= .5;
+		}
 		m_left->Set(l * MAX_SPEED);
 		m_right->Set(r * MAX_SPEED);
 	}
