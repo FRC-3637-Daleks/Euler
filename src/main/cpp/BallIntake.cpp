@@ -93,8 +93,11 @@ BallIntake::Tick()
       		intake_solenoid->Set(frc::DoubleSolenoid::kForward);
     	}
  	}
-
-	if (m_xbox->GetBumper(frc::GenericHID::kLeftHand) || eject) {
+	if (m_xbox->GetBumper(frc::GenericHID::kRightHand)) {
+		m_conveyor->Set(-1);
+		m_intake->Set(-1);
+	}
+	else if (m_xbox->GetBumper(frc::GenericHID::kLeftHand) || eject) {
 		pickupPhase = 0;
 		// if (seeBall && m_releaseSensor->Get() && ballCount > 0) {
 		// 	ballCount--;
@@ -107,7 +110,8 @@ BallIntake::Tick()
 			m_conveyor->Set(1);
 			m_intake->Set(1);
 		}
-	} else {
+	}
+	else {
     	if (m_xbox->GetTriggerAxis(frc::GenericHID::kRightHand)) {
 			if (!triggerHeld) {
 				triggerOn = !triggerOn;

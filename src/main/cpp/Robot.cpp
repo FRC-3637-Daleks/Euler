@@ -50,10 +50,10 @@ void Robot::RobotPeriodic()
 // I think I have some errors here, I wanna test this
 void Robot::AutonomousInit()
 {
-  auton_start = (int)frc::SmartDashboard::GetData("Start Auton");
-  auton_end =   (int)frc::SmartDashboard::GetData("End Auton");
-  waitSeconds = (int)frc::SmartDashboard::GetData("Delay");
-  m_auton->AutonCase((double)auton_start, (double)auton_end); // the parameters change based on what auton sequence we are going to use
+  auton_start = 2;//(int)frc::SmartDashboard::GetData("Start Auton");
+  auton_end =   1;//(int)frc::SmartDashboard::GetData("End Auton");
+  waitSeconds = 0;//(int)frc::SmartDashboard::GetData("Delay");
+  m_auton->AutonCase((int)auton_start, (int)auton_end); // the parameters change based on what auton sequence we are going to use
   m_climber->Reinit();
   m_spinner->Reinit();
   m_ballIntake->Reinit();
@@ -63,7 +63,7 @@ void Robot::AutonomousPeriodic()
 {
 	double period = (double)this->GetPeriod();
 	waitSeconds += period;
-	if (waitSeconds <= 0) { // the number 0 change based on how long we want to wait in the auton sequence
+	if (waitSeconds >= 0) { // the number 0 change based on how long we want to wait in the auton sequence
 		m_auton->AutonDrive(period);
 	}
 }
@@ -78,15 +78,23 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
     if (m_drive) {
-	  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
-	    m_pi->FollowBall();
+		  if (m_rightStick->GetTrigger() || m_leftStick->GetTrigger()) { // JUST FOR TESTING
+		    m_pi->FollowBall();
+      } else if (m_xbox->GetStartButton()) {
+        frc::SmartDashboard::PutBoolean("start button pressed", true);
+        m_drive->TankDrive(-0.3, -0.3, false);
       } else {
         m_drive->TankDrive(m_leftStick, m_rightStick, true);
+        frc::SmartDashboard::PutBoolean("start button pressed", false);
       }
     }
+
+
 	m_ballIntake->Tick();  
-	m_spinner->Tick();
-	m_climber->Tick();
+  m_spinner->Tick();
+  m_climber->Tick();
+
+
 }
 
 void Robot::TestInit()

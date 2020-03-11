@@ -65,7 +65,7 @@ Climber::Tick()
     }
 
     if (m_climb_solenoid->Get() == frc::DoubleSolenoid::kForward) {
-        double motorSpeed = m_xbox->GetY(frc::GenericHID::kLeftHand) * -1;
+        double motorSpeed = m_xbox->GetY(frc::GenericHID::kLeftHand) * -0.5;
         m_ratchet_solenoid->Set(motorSpeed > 0); 
         m_lift->Set(motorSpeed);
     } else {

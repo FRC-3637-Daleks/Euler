@@ -123,10 +123,6 @@ DalekDrive::TankDrive(Joystick* leftStick, Joystick* rightStick, bool squaredInp
 			l = squareInput(l);
 			r = squareInput(r);
 		}
-		if (l * r < 0) {
-			l *= .5;
-			r *= .5;
-		}
 		m_left->Set(l * MAX_SPEED);
 		m_right->Set(r * MAX_SPEED);
 	}
@@ -246,8 +242,9 @@ DalekDrive::Cartesian(double ySpeed, double xSpeed, double zRotation, double gyr
 double
 DalekDrive::GetVelocity()
 {
-	double wheelRad = 0.612775;
-	return wheelRad * (m_leftEncoder[FRONT]->GetVelocity() + m_rightEncoder[FRONT]->GetVelocity()) / 120;
+	SmartDashboard::PutNumber("right encoder", m_rightEncoder[FRONT]->GetVelocity());
+	SmartDashboard::PutNumber("left encoder", m_leftEncoder[FRONT]->GetVelocity());
+	return WHEEL_CIRCUMFERENCE * (m_leftEncoder[FRONT]->GetVelocity() + m_rightEncoder[FRONT]->GetVelocity()) / (120 * GEAR_RATIO); // right is incorrect so im cganhing it here
 }
 	
 void
@@ -276,6 +273,10 @@ DalekDrive::InitDalekDrive(void)
 	m_leftEncoder[REAR]  = new CANEncoder(*m_leftMotor[REAR]);
 	m_rightEncoder[FRONT]= new CANEncoder(*m_rightMotor[FRONT]);
 	m_rightEncoder[REAR] = new CANEncoder(*m_rightMotor[REAR]);
+	m_leftEncoder[FRONT]->SetInverted(true);
+	m_leftEncoder[REAR]->SetInverted(true);
+	m_rightEncoder[FRONT]->SetInverted(false);
+	m_rightEncoder[REAR]->SetInverted(false);
 
 	// Configure the SparkMax
     m_leftMotor[FRONT]->SetCANTimeout(CAN_TIMEOUT);

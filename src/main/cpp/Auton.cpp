@@ -8,6 +8,7 @@ Auton::Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIn
 	m_ballIntake    = ballIntake;
 
 	auton_phase = 0;
+	temp = true;
 	pickupBallStart = frc::SmartDashboard::GetData("Pickup Ball Start");
 	pickupBallEnd   = frc::SmartDashboard::GetData("Pickup Ball End");
 
@@ -46,7 +47,7 @@ void Auton::AutonCase(int begin, int end)
 	}
 
 	enter_target_ang = atan2(enter_target_y, enter_target_x);
-	exit_target_ang  = atan2(exit_target_x, exit_target_y);
+	exit_target_ang  = atan2(exit_target_y, exit_target_x);
 	enter_target_dist = sqrt(enter_target_x * enter_target_x + enter_target_y * enter_target_y);
 	exit_target_dist = sqrt(exit_target_x * exit_target_x + exit_target_y * exit_target_y);
 	//here set up what happens at the end (after delivery)
@@ -54,7 +55,7 @@ void Auton::AutonCase(int begin, int end)
 
 void Auton::AutonDrive(double period)
 {
-	if (!m_ahrs->IsCalibrating()) {
+	// if (!m_ahrs->IsCalibrating()) {
 		switch (auton_phase) {
 			case 0: // turn to target
 			if (turnToFace(enter_target_ang)) {
@@ -68,10 +69,10 @@ void Auton::AutonDrive(double period)
 			}
 			break;
 			case 2: // turn straight
-			// THIS IS LIMELIGHT-CONTROLLED MOVEMENT
+			// THIS IS LIMELIGHT-CONTROLLED MOVEMENT 
 			break;
 			case 3: // drive to wall
-			if (driveToCoordinates(0, .5, PI / 2, period)) { // THIS SHOULD BE DRIVING AFTER LIMELIGHT DOESN't SENSE ANYMORE
+			if (driveToCoordinates(0, .5, PI / 2, period)) { // THIS SHOULD BE DRIVING AFTER LIMELIGHT DOESN'T SENSE ANYMORE
 				auton_phase++;
 			}
 			break;
@@ -114,7 +115,7 @@ void Auton::AutonDrive(double period)
 			// 	break;
 			// add more once we get there
 		}
-	}
+	// }
 	
 	frc::SmartDashboard::PutNumber ("Auton Phase", auton_phase);
 	//frc::SmartDashboard::PutNumber("enterance angle offset", angleOffset(enter_target_ang) * 180 / PI);
@@ -132,11 +133,14 @@ void Auton::AutonDrive(double period)
 	frc::SmartDashboard::PutNumber("exit dist offset", sqrt(pow(exit_target_x - m_ahrs->GetDisplacementX(), 2) + pow(exit_target_y - m_ahrs->GetDisplacementY(), 2)));
 }
 
-bool Auton::driveToCoordinates(double x, double y, double angle, double period) 
+bool Auton::driveToCoordinates(double x, double y, double angle, double period)
 {
 	travelled_dist += m_drive->GetVelocity() * period;
-	SmartDashboard::PutNumber("angle offset", angleOffset(angle) * 180 / PI);
-	SmartDashboard::PutNumber("dist offset", sqrt(pow(x - m_ahrs->GetDisplacementX(), 2) + pow(y - m_ahrs->GetDisplacementY(), 2))); // this is not correct currently
+	SmartDashboard::PutNumber("velocity", m_drive->GetVelocity());
+	SmartDashboard::PutNumber("period", period);
+	SmartDashboard::PutNumber("sensesd travel", travelled_dist);
+	SmartDashboard::PutNumber("angle offset", angleOffset(angle) * 180 / PI); // i think angle offset is wack
+	SmartDashboard::PutNumber("dist offset", sqrt(x*x + y*y) - travelled_dist); // this is not correct currently
 	return m_pi->driveAdjusted(angleOffset(angle), sqrt(x*x + y*y) - travelled_dist, angleOffsetCoefficient);
 }
 
@@ -161,7 +165,8 @@ bool Auton::turnToFace(double angle)
 
 double Auton::angleOffset(double angle)
 {
-	double offset = fmod(angle - (m_ahrs->GetAngle() + 90) * PI / 180, 2 * PI);
+	SmartDashboard::PutNumber("ahrs ang", m_ahrs->GetAngle());
+	double offset = fmod(angle - (m_ahrs->GetAngle()) * PI / 180, 2 * PI);
 	//Josh's function = fmod(angle - (m_ahrs->GetAngle()) * PI / 180, 360)
 	if (offset > PI) {
 		offset -= PI * 2;

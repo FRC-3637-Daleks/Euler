@@ -1,10 +1,12 @@
 #pragma once
 
+#define WHEEL_CIRCUMFERENCE			0.612775 // meters
+#define GEAR_RATIO					12
 #define CAN_TIMEOUT					100
 #define STALL_LIMIT					60
 #define FREE_LIMIT					20
 #define RAMP_RATE					0.5
-#define MAX_SPEED					1.0
+#define MAX_SPEED					.4
 #define NUM_MOTORS_PER_SIDE			2
 #define LEFT						0
 #define RIGHT						1
