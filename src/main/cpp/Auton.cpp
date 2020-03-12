@@ -8,7 +8,6 @@ Auton::Auton(DalekDrive *drive, AHRS * ahrs, RaspberryPi *pi, BallIntake *ballIn
 	m_ballIntake    = ballIntake;
 
 	auton_phase = 0;
-	temp = true;
 	pickupBallStart = frc::SmartDashboard::GetData("Pickup Ball Start");
 	pickupBallEnd   = frc::SmartDashboard::GetData("Pickup Ball End");
 
